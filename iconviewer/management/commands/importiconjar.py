@@ -4,8 +4,17 @@ import gzip
 import tempfile
 import json
 from pathlib import Path
+from contextlib import contextmanager
 from iconviewer.models import Icon, Tag, Group, Set
 from django.core.management.base import BaseCommand, CommandError
+
+
+class LogLevels():
+    """Define some loglevels to help self document log calls."""
+
+    ERROR = 0
+    SUCCESS = 1
+    INFO = 2
 
 
 class Command(BaseCommand):
@@ -21,59 +30,89 @@ class Command(BaseCommand):
             help="Path to an iconjar or a tree of iconjars."
         )
 
+    def log(self, logstr, *args, level=LogLevels.INFO, **kwargs):
+        """
+        Log an info level message to stdout.
+
+        @param str logstr String to send to stdout/stderr.
+        @param LOGLEVEL level
+        """
+        if self.verbosity > level:
+
+            logstr = str(logstr).format(*args, **kwargs)
+
+            if level < 1:
+                self.stderr.write(self.style.ERROR(logstr))
+            elif level < 2:
+                self.stdout.write(self.style.SUCCESS(logstr))
+            else:
+                self.stdout.write(logstr)
+
+    def error(self, logstr, *args, **kwargs):
+        """
+        Log an error level message to stderr.
+
+        @param str logstr String to send to stderr.
+        """
+        self.log(logstr, level=LogLevels.ERROR, *args, **kwargs)
+
+    def success(self, logstr, *args, **kwargs):
+        """
+        Log a success level message to stdout.
+
+        @param str logstr String to send to stdout.
+        """
+        self.log(logstr, level=LogLevels.SUCCESS, *args, **kwargs)
+
     def handle(self, *args, **options):
         """Run the importer module with the given arguments."""
-        try:
-            path = options['path']
-            stdout = self.stdout if options['verbosity'] > 1 else None
-            importer = IconJarImporter(path, stdout)
-            if importer.jars:
-                self.stdout.write(
-                    "Importing these iconjars: \n- {}".format(
-                        "\n- ".join([str(p[0].parent) for p in importer.jars])
-                    )
-                )
-                importer.import_all()
-                self.stdout.write(self.style.SUCCESS(
-                    "Successfully imported your IconJars!"
-                ))
-            else:
-                self.stdout.write(self.style.ERROR(
-                    "No IconJars found with {}".format(path)
-                ))
-        except Exception as exc:
-            raise exc
-            raise CommandError(exc)
+        self.verbosity = options.get("verbosity", LogLevels.ERROR)
+
+        importer = IconJarImporter(self.error, self.log)
+        importer.import_all(options['path'])
+        if not importer.errors:
+            self.success("Successfully imported your IconJars!")
+        else:
+            self.error("Import completed with errors ({})!", importer.errors)
 
 
 class IconJarImporter:
     """Load data from an IconJar file into the django database."""
 
-    def __init__(self, path, stdout=None):
+    def __init__(self, error_func=None, log_func=None):
         """
         Import iconjars.
 
         @param str path to an iconjar(s)
         """
-        self.stdout = stdout
+        self.errors = 0
+        self.error_func = error_func
+        self.log_func = log_func
         self.tags = {}
         self.groups = {}
         self.sets = {}
-        self.path = path
-        self.jars = self.get_jar_data(path)
 
-    def import_all(self):
+    def import_all(self, str_path):
         """
         Import icon groups (sets) defined in the iconjar metadata file.
 
-        @param dict metadata Decoded JSON from the metadata file.
-        @param Path icons_path Icon path corresponding with the metadata file.
+        @param str str_path Path to search for IconJars to import.
         """
-        for icons_path, metadata in self.jars:
-            self.import_sets(metadata['sets'])
-            self.import_groups(metadata['groups'])
-            for icon in metadata['items'].values():
-                self.import_icon(icon, icons_path)
+        with self.with_path(str_path) as path:
+            jars = self.get_jar_data(path)
+            if jars:
+                self.log(
+                    "Importing these iconjars: \n- {}",
+                    "\n- ".join([str(str_path) for p in jars])
+                )
+            else:
+                self.error("No IconJars found with {}", str(path))
+
+            for icons_path, metadata in jars:
+                self.import_sets(metadata['sets'])
+                self.import_groups(metadata['groups'])
+                for icon in metadata['items'].values():
+                    self.import_icon(icon, icons_path)
 
     def import_icon(self, icon, icons_path):
         """
@@ -83,16 +122,32 @@ class IconJarImporter:
         """
         tags = self.import_icon_tags(icon.get('tags', "").split(","))
 
-        icon, created = Icon.objects.get_or_create(
-            uuid=icon['identifier'],
-            name=icon['name'],
-            file=icon['file'],
-            parent=self.sets.get(icon['parent'], None),
-            svg=(icons_path / icon['file']).read_text(encoding='utf-8')
-        )
-        self.log("Created icon: {}".format(icon.name))
-        icon.tags.add(*tags)
-        icon.save()
+        try:
+            icon_obj, created = Icon.objects.get_or_create(
+                uuid=icon['identifier'],
+                name=icon['name'],
+                file=icon['file'],
+                parent=self.sets.get(icon['parent'], None)
+            )
+            if created:
+                self.log("Created icon: {}", icon_obj.name)
+                # Relatively costly operations are done after we know it needs
+                # to be done, i.e. this is a new record.
+                icon_obj.svg = (icons_path / icon['file']).read_text('utf-8')
+            else:
+                self.log("Icon: {} exists.", icon_obj.name)
+            if set(icon_obj.tags.all()) != set(tags):
+                self.log("Setting Tags on {}.", icon_obj.name, tags)
+                icon_obj.tags.add(*tags)
+            else:
+                self.log(
+                    "Tags {} already set on {}.",
+                    icon_obj.name,
+                    ", ".join([t.name for t in tags])
+                )
+            icon_obj.save()
+        except (FileNotFoundError, OSError) as exc:
+            self.error(exc)
 
     def import_groups(self, groups):
         """
@@ -110,8 +165,7 @@ class IconJarImporter:
         """
         self._import_organisational_unit(self.sets, Set, sets)
 
-    @staticmethod
-    def _import_organisational_unit(unit_store, unit_model, data):
+    def _import_organisational_unit(self, unit_store, unit_model, data):
         """
         Be DRY: Import similar organisation objects such as sets and groups.
 
@@ -121,12 +175,15 @@ class IconJarImporter:
         """
         # First add all sets without hierarchy.
         for unit in data.values():
-            unit_obj = unit_model(
+            unit_obj, created = unit_model.objects.get_or_create(
                 name=unit['name'],
                 uuid=unit['identifier'],
             )
-            unit_obj.save()
             unit_store[unit['identifier']] = unit_obj
+            if created:
+                self.log(
+                    "Created {}: {}", unit_model._meta.model_name, unit['name']
+                )
 
         # Now that all sets exist we can easily add their parents
         for unit in data.values():
@@ -151,69 +208,92 @@ class IconJarImporter:
             if tag not in self.tags.keys():
                 tag_obj, created = Tag.objects.get_or_create(name=tag)
                 if created:
-                    self.log("Created tag {}".format(tag))
+                    self.log("Created tag {}", tag)
                 self.tags[tag] = tag_obj
             icon_tags.append(self.tags[tag])
         return icon_tags
 
-    @classmethod
-    def get_jar_data(cls, path):
+    def get_jar_data(self, path):
         """
         Find jars in given path and extract data from an IconJar file.
 
-        @param str path of the IconJar file(s).
+        @param Path path of the IconJar file(s).
         @return list of tuples (icons_path, metadata)
         """
-        path = Path(path)
-        compressed_extentions = shutil.get_unpack_formats()[1]
-        extension = ".".join(path.suffixes)
-        try:
-            if path.is_file() and extension in compressed_extentions:
-                path = cls.uncompress(path)
-            jars = []
-            for meta_file in path.rglob("META"):
-                # There should be a dir with icons in the same directory as the
-                # META file.
-                icons_path = meta_file.parent / "icons"
-                if not icons_path.is_dir():
-                    raise IOError(
-                        "Can't find an icons directory under {}".format(path)
-                    )
-                if not meta_file.is_file():
-                    raise IOError(
-                        "Can't find a META file under {}".format(path)
-                    )
-                with gzip.open(meta_file, mode='rb') as meta_file_handle:
-                    metadata = json.load(meta_file_handle)
-                jars.append((icons_path, metadata))
-
-        finally:
-            # Clean up the temp file if the input was a compressed file.
-            try:
-                path.cleanup()
-            except AttributeError:
-                pass
-
+        jars = []
+        if path.suffix == ".iconjar":
+            paths = [path]
+        else:
+            paths = path.rglob('*.iconjar')
+        for jar in paths:
+            # There should be a dir with icons in the same directory as the
+            # META file.
+            meta_file = jar / "META"
+            icons_path = meta_file.parent / "icons"
+            if not icons_path.is_dir():
+                raise IOError(
+                    "Can't find an icons directory under {}".format(path)
+                )
+            if not meta_file.is_file():
+                raise IOError(
+                    "Can't find a META file under {}".format(path)
+                )
+            with gzip.open(meta_file, mode='rb') as meta_file_handle:
+                metadata = json.load(meta_file_handle)
+            jars.append((icons_path, metadata))
         return jars
 
-    @staticmethod
-    def uncompress(path):
+    def uncompress(self, path):
         """
         Return raw data from GZIP files.
 
-        @param str|Path path of the compressed file.
-        @return Path object of a temporary directory context.
-        """
-        self.log("Uncompressing iconjar META file: {}".format(path))
-        tmpdir = tempfile.TemporaryDirectory()
-        shutil.unpack_archive(path, tmpdir)
-        return Path(tmpdir)
+        Note: TempDirectory objects need to be cleaned after they are no longer
+        needed. You should call tmpdir.cleanup()
 
-    def log(self, logstr):
+        @param str|Path path of the compressed file.
+        @return TempDirectory object of a temporary directory.
+        """
+        self.log("Uncompressing path: {}", str(path))
+        tmpdir = tempfile.TemporaryDirectory()
+        shutil.unpack_archive(str(path), tmpdir.name)
+        return tmpdir
+
+    @contextmanager
+    def with_path(self, path):
+        """
+        Context for transparently using compressed files and dirs as dirs.
+
+        @param Path path to the file or directory.
+        @yield Path as a context, use with `with`.
+        """
+        path = Path(path)
+        formats = shutil.get_unpack_formats()
+        compressed_extensions = [ext for f in formats for ext in f[1]]
+        ext = "".join(path.suffixes)
+        is_compressed = any([ext.endswith(x) for x in compressed_extensions])
+        if path.is_file() and is_compressed:
+            # This is a compressed archive, uncompress it in a tmpdir and yield
+            # the tmpdir as a Path.
+            tmpdir = self.uncompress(path)
+            yield Path(tmpdir.name)
+            tmpdir.cleanup()
+        else:
+            # This is an existsing path, yield as is.
+            yield path
+
+    def log(self, logstr, *args, **kwargs):
         """
         Send a log message through Django.
 
         @param str logstr String to log through Django.
         """
-        if self.stdout:
-            self.stdout.write(logstr)
+        self.log_func(logstr, *args, **kwargs)
+
+    def error(self, logstr, *args, **kwargs):
+        """
+        Log an error message through Django.
+
+        @param str logstr String to log through Django.
+        """
+        self.errors += 1
+        self.error_func(logstr, *args, **kwargs)
