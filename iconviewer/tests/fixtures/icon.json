@@ -1,0 +1,39 @@
+[
+  {
+    "model": "iconviewer.group",
+    "pk": "59b1c335-bf3c-4fc6-9d17-7c7f91942cfd",
+    "fields": {
+      "parent": null,
+      "path": "testroot",
+      "name": "TestRoot"
+    }
+  },
+  {
+    "model": "iconviewer.group",
+    "pk": "9ef738b9-d5a3-4020-a863-e2dc633ca697",
+    "fields": {
+      "parent": "59b1c335-bf3c-4fc6-9d17-7c7f91942cfd",
+      "path": "testgroup",
+      "name": "TestGroup"
+    }
+  },
+  {
+    "model": "iconviewer.tag",
+    "pk": 1,
+    "fields": {
+      "name": "awesome"
+    }
+  },
+  {
+    "model": "iconviewer.icon",
+    "pk": "ae3c0261-f81e-41de-855b-82c1565959c6",
+    "fields": {
+      "parent": "9ef738b9-d5a3-4020-a863-e2dc633ca697",
+      "file": "",
+      "name": "Nice Icon",
+      "tags": [
+        1
+      ]
+    }
+  }
+]
