@@ -5,8 +5,13 @@ import tempfile
 import json
 from pathlib import Path
 from contextlib import contextmanager
-from iconviewer.models import Icon, Tag, Group, Set
+from iconviewer.settings import MEDIA_ROOT
+from iconviewer.models.tag import Tag
+from iconviewer.models.group import Group
+from iconviewer.models.iconset import IconSet
+from iconviewer.models.icon import Icon
 from django.core.management.base import BaseCommand, CommandError
+from django.core.files import File
 
 
 class LogLevels():
@@ -109,8 +114,8 @@ class IconJarImporter:
                 self.error("No IconJars found with {}", str(path))
 
             for icons_path, metadata in jars:
-                self.import_sets(metadata['sets'])
                 self.import_groups(metadata['groups'])
+                self.import_sets(metadata['sets'])
                 for icon in metadata['items'].values():
                     self.import_icon(icon, icons_path)
 
@@ -126,14 +131,16 @@ class IconJarImporter:
             icon_obj, created = Icon.objects.get_or_create(
                 uuid=icon['identifier'],
                 name=icon['name'],
-                file=icon['file'],
-                parent=self.sets.get(icon['parent'], None)
+                icon_set=self.sets.get(icon['parent'], None)
             )
             if created:
                 self.log("Created icon: {}", icon_obj.name)
                 # Relatively costly operations are done after we know it needs
                 # to be done, i.e. this is a new record.
-                icon_obj.svg = (icons_path / icon['file']).read_text('utf-8')
+                icon_obj.file.save(
+                    icon['file'],
+                    open(icons_path / icon['file'], 'r', encoding='utf-8')
+                )
             else:
                 self.log("Icon: {} exists.", icon_obj.name)
             if set(icon_obj.tags.all()) != set(tags):
@@ -163,14 +170,14 @@ class IconJarImporter:
 
         @param dict sets from the JSON data of the metadata file.
         """
-        self._import_organisational_unit(self.sets, Set, sets)
+        self._import_organisational_unit(self.sets, IconSet, sets)
 
     def _import_organisational_unit(self, unit_store, unit_model, data):
         """
         Be DRY: Import similar organisation objects such as sets and groups.
 
         @param dict unit_store Where to keep a reference to the model instance.
-        @param Group|Set Unit model
+        @param Group|IconSet Unit model
         @param dict data from the JSON data of the metadata file.
         """
         # First add all sets without hierarchy.
@@ -182,7 +189,9 @@ class IconJarImporter:
             unit_store[unit['identifier']] = unit_obj
             if created:
                 self.log(
-                    "Created {}: {}", unit_model._meta.model_name, unit['name']
+                    "Created {}: {} ({})", unit_model._meta.model_name,
+                    unit_obj.name,
+                    unit_obj.uuid
                 )
 
         # Now that all sets exist we can easily add their parents
@@ -190,11 +199,20 @@ class IconJarImporter:
             parent = unit.get('parent', None)
             if not parent:
                 continue
-            parent = unit_store.get(parent, None)
-            if parent:
+            try:
+                parent = self.sets.get(parent, self.groups[parent])
                 child = unit_store[unit['identifier']]
-                child.parent = parent
+                child.group = parent
                 child.save()
+            except KeyError as exc:
+                self.error(
+                    "{}: {} ({}) defines parent: {} which does not exist.",
+                    unit_model._meta.model_name,
+                    unit['name'],
+                    unit['identifier'],
+                    parent
+                )
+                raise exc
 
     def import_icon_tags(self, tags):
         """
@@ -254,7 +272,7 @@ class IconJarImporter:
         @return TempDirectory object of a temporary directory.
         """
         self.log("Uncompressing path: {}", str(path))
-        tmpdir = tempfile.TemporaryDirectory()
+        tmpdir = tempfile.TemporaryDirectory(dir=MEDIA_ROOT)
         shutil.unpack_archive(str(path), tmpdir.name)
         return tmpdir
 

@@ -7,21 +7,22 @@ import os
 import uuid
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
-from .group import Group
+from iconviewer.models.group import Group
 
 
-class Set(models.Model):
-    """Store the meta data attributes of a group."""
+class IconSet(models.Model):
+    """Store the meta data attributes of a Set."""
 
     uuid = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False
     )
-    parent = models.ForeignKey(
+    group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        related_name="iconsets"
     )
     name = models.CharField(
         max_length=200,

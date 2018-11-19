@@ -87,6 +87,10 @@ TEMPLATES = [
         },
     },
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, "iconviewer", "static")
+MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
+STATIC_URL = "/static/"
+MEDIA_URL = STATIC_URL + "media/"
 
 WSGI_APPLICATION = 'iconviewer.wsgi.application'
 
@@ -97,7 +101,7 @@ WSGI_APPLICATION = 'iconviewer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
 

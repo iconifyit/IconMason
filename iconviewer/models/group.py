@@ -16,10 +16,11 @@ class Group(models.Model):
         default=uuid.uuid4,
         editable=False
     )
-    parent = models.ForeignKey(
+    group = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        related_name="groups"
     )
     name = models.CharField(
         max_length=200,

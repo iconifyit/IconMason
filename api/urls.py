@@ -16,17 +16,28 @@ Including another URLconf
 from django.urls import include, path
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import ListIconView, RetrieveView
+from rest_framework.schemas import get_schema_view
+from rest_framework.routers import DefaultRouter
+from api.views import IconViewSet
+from api.views import TagViewSet
+from api.views import IconSetViewSet
+from api.views import GroupViewSet
+from api.views import TreeViewSet
+
+
 UUID_RE = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
 
-urlpatterns = [
-    url(r'^icon/$', ListIconView.as_view(), name="create"),
-    url(
-        r'^icon/(?P<pk>{})/$'.format(UUID_RE),
-        RetrieveView.as_view(),
-        name="crud"
-    ),
-    url(r'^auth/', include('rest_framework.urls'))
-]
+router = DefaultRouter()
+router.register(r'icons', IconViewSet, basename='icon')
+router.register(r'tags', TagViewSet, basename='tag')
+router.register(r'groups', GroupViewSet, basename='group')
+router.register(r'tree', TreeViewSet, basename='tree')
+router.register(r'iconsets', IconSetViewSet, basename='iconset')
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+
+schema_view = get_schema_view(title="Icon Viewer API")
+
+urlpatterns = [
+    url('^schema$', schema_view),
+    url(r'^auth/', include('rest_framework.urls')),
+] + router.urls
