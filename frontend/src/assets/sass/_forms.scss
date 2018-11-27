@@ -1,0 +1,179 @@
+$_form-box-shadow: inset 1px 1px 1px rgba(#000, 0.1);
+$_form-box-shadow-focus: $_form-box-shadow, 0px 2px 1px $form-color-shadow-focus;
+$_form-box-shadow-hover: $_form-box-shadow, 0px 2px 1px $form-color-shadow-hover;
+
+.field {
+  display: block;
+  margin: 1rem 0;
+  label {
+    display: block;
+    margin-bottom: $small-spacing / 1.6;
+  }
+
+  input,
+  select,
+  textarea {
+    display: block;
+    font-family: $font-stack-regular;
+    font-size: 1rem;
+  }
+
+  #{$all-text-inputs} {
+    appearance: none;
+    background-color: $form-color-input-background;
+    border: 0;
+    box-shadow: $_form-box-shadow;
+    margin-bottom: $base-spacing;
+    padding: $base-spacing;
+    transition: border-color $base-duration $base-timing;
+    width: 100%;
+
+    &:hover {
+      box-shadow: $_form-box-shadow-hover;
+    }
+
+    &:focus {
+      box-shadow: $_form-box-shadow-focus;
+      outline: none;
+    }
+
+    &:disabled {
+      background-color: shade($form-color-input-background, 5%);
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: tint($color-text, 40%);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    height: 10rem;
+    @media only screen and (min-width: $screen-small) {
+      height: 15rem;
+    }
+    @media only screen and (min-width: $screen-medium) {
+      height: 20rem;
+    }
+    @media only screen and (min-width: $screen-extra-large) {
+      height: 25rem;
+    }
+
+  }
+
+  [type="checkbox"],
+  [type="radio"] {
+    display: inline;
+    margin-right: $small-spacing / 2;
+  }
+
+  [type="file"] {
+    margin-bottom: $small-spacing;
+    width: 100%;
+  }
+
+  select {
+    margin-bottom: $small-spacing;
+    width: 100%;
+  }
+
+  [type="checkbox"],
+  [type="radio"],
+  [type="file"],
+  select {
+    &:focus {
+      outline: $focus-outline-button;
+      outline-offset: $focus-outline-offset-button;
+    }
+  }
+}
+
+
+// `:not(old)` matches all elements because there is no class old.
+// Old browsers that don't support the `:checked` selector, also don't support
+// the `not([..])` selector falling back to a normal checkbox.
+// Effectively only replacing all checkboxes and radio's by a custom element
+// unless it's an old browser, and unless the `switch` should be applied.
+.field:not(old) {
+  display: block;
+  input[type=checkbox]:not(.switch),
+  input[type=radio]:not(.switch) {
+    opacity: 0;
+    position: absolute;
+    + label{
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      padding: 0 0 0 $form-checkbox-size + 1rem;
+      height: $form-checkbox-size;
+      line-height: $form-checkbox-size;
+      margin: 0;
+    }
+    + label:before {
+      position: absolute;
+      left: 0;
+      content: ' ';
+      width: $form-checkbox-size;
+      height: $form-checkbox-size;
+      border: $form-checkbox-border;
+      background: $form-color-input-background;
+      color: $form-color-checkbox-foreground;
+      font-size: $form-checkbox-font-size;
+      text-shadow: 2px 2px 2px $form-color-checkbox-check-shadow;
+      text-align: center;
+      padding: 0;
+      line-height: 1.2rem;
+    }
+  }
+
+  input[type=checkbox]:not(.switch):checked + label:before {
+    content: '✔\FE0E'; // \FE0E makes sure this isn't rendered as an emoji
+  }
+
+  input[type="radio"] + label:before {
+    border-radius: $form-checkbox-size; // normally a circle
+  }
+
+  input[type="radio"]:checked + label:before {
+    content: '⚫\FE0E'; // \FE0E makes sure this isn't rendered as an emoji
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    &:active,
+    &:focus {
+      + label {
+        //outline: $focus-outline-button;
+        //outline-offset: $focus-outline-offset-button;
+        text-decoration: underline;
+      }
+    }
+  }
+
+}
+
+// This mixin defines input status colours
+@mixin input-status($status-color) {
+  $status-shadow: $_form-box-shadow, 0px 2px 1px $status-color;
+  #{$all-text-inputs} {
+    margin-bottom: $small-spacing;
+    box-shadow: $status-shadow;
+  }
+  .msg {
+    margin: 0 0 $base-spacing $small-spacing;
+    color: $status-color;
+  }
+}
+
+.field {
+  &.bad {
+    @include input-status($status-color-bad-dark);
+  }
+  &.good {
+    @include input-status($status-color-good-dark);
+  }
+  &.warn {
+    @include input-status($status-color-warn-dark);
+  }
+}

@@ -1,0 +1,63 @@
+// Blur everything in the background, i.e. not the modal.
+body.modal-active {
+  >*:not(.modal-wrapper) {
+    filter: blur(3px) grayscale(90%);
+  }
+}
+
+.modal-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  flex-flow: row nowrap;
+  align-content: center;
+  align-items: center;
+  &.curtain {
+    background: rgba(#fff, .4);
+  }
+  .modal {
+    flex: 0 1 40rem;
+    background: $modal-background-color;
+    box-shadow: 2rem 2rem 3rem rgba(#000, 0.8);
+    margin: 1rem;
+    border-radius: $base-border-radius;
+    border: 2px $modal-header-background-color solid;
+    header {
+      position: relative;
+      background: $modal-header-background-color;
+      padding: 2rem 2rem 1rem 2rem;
+      h5 {
+        color: $modal-header-color;
+        text-shadow: .2rem .2rem .1rem rgba(#000, .8);
+      }
+    }
+    main {
+      width: 100%;
+      min-height: 5rem;
+      padding: 2rem;
+      font-size: modular-scale(1);
+    }
+    footer {
+      width: calc(100% - 4rem);
+      margin: 1rem 2rem 0 2rem;
+      padding: 1rem 0;
+      display: flex;
+      justify-content: flex-end;
+      flex-flow: row nowrap;
+      align-content: center;
+      align-items: flex-end;
+      border-top: 1px var(--secondary-light) solid;
+      button {
+        flex: 0;
+        margin-left: 1rem;
+        padding: .5rem 2rem;
+      }
+    }
+  }
+}

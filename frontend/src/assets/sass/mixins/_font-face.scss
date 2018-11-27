@@ -1,0 +1,62 @@
+@charset "UTF-8";
+///
+/// Borrowed from bourbon.io
+///
+/// Generates an `@font-face` declaration. You can choose the specific file
+/// formats you need to output; the mixin supports `eot`, `ttf`, `svg`, `woff2`
+/// and `woff`. The mixin also supports usage with the Rails Asset Pipeline,
+/// which you can enable per use, or globally in the `$bourbon()` settings.
+///
+/// @argument {string} $font-family
+///
+/// @argument {string} $file-path
+///
+/// @argument {string | list} $file-formats [("ttf", "woff2", "woff")]
+///   List of the font file formats to include. Can also be set globally using
+///   the `global-font-file-formats` key in the Bourbon settings.
+///
+/// @content
+///   Any additional CSS properties that are included in the `@include`
+///   directive will be output within the `@font-face` declaration, e.g. you can
+///   pass in `font-weight`, `font-style` and/or `unicode-range`.
+///
+/// @example scss
+///   @include font-face(
+///     "source-sans-pro",
+///     "fonts/source-sans-pro-regular",
+///     ("woff2", "woff")
+///   ) {
+///     font-style: normal;
+///     font-weight: 400;
+///   }
+///
+///   // CSS Output
+///   @font-face {
+///     font-family: "source-sans-pro";
+///     src: url("fonts/source-sans-pro-regular.woff2") format("woff2"),
+///          url("fonts/source-sans-pro-regular.woff") format("woff");
+///     font-style: normal;
+///     font-weight: 400;
+///   }
+///
+
+@mixin font-face($font-family, $file-path, $formats: $default-font-formats) {
+  $formats-map: (
+    eot:   "#{$file-path}.eot?#iefix" format("embedded-opentype"),
+    woff2: "#{$file-path}.woff2" format("woff2"),
+    woff:  "#{$file-path}.woff" format("woff"),
+    ttf:   "#{$file-path}.ttf" format("truetype"),
+    svg:   "#{$file-path}.svg##{$font-family}" format("svg"),
+  );
+  $src: ();
+  @each $key, $values in $formats-map {
+    $file-path: nth($values, 1);
+    $font-format: nth($values, 2);
+    $src: append($src, url($file-path) $font-format, comma);
+  }
+  @font-face {
+    font-family: $font-family;
+    src: $src;
+    @content;
+  }
+}

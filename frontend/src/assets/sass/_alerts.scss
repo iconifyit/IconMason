@@ -1,0 +1,27 @@
+@import "mixins/mixins";
+$small-font-size: 0.75em;
+[class^="alert"] {
+  border-radius: $base-border-radius;
+  display: block;
+  line-height: 1;
+  padding: 2em 2em;
+  margin: 1em 0;
+  box-shadow: 1px 1px 4px rgba(#000, .8);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  header {
+    display: block;
+    font-weight: bold;
+  }
+  // Is there a header?
+  header ~ p {
+    margin-left: 3rem;
+  }
+  // Define the actual color variable.
+  @include status-style {
+    border-color: map-get($colors, border);
+  };
+}
+
+
+

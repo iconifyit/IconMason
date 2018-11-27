@@ -1,11 +1,10 @@
 """Store the data meta data attributes of an icon."""
-import os
-from iconviewer.settings import MEDIA_ROOT
 import uuid
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from iconviewer.models.iconset import IconSet
 from iconviewer.models.tag import Tag
+from iconviewer.settings import MEDIA_ROOT
 
 
 class Icon(models.Model):
@@ -38,6 +37,9 @@ class Icon(models.Model):
         default="",
         max_length=200
     )
+
+    def get_svg(self):
+        return self.file.read()
 
     def __str__(self):
         """Return a human readable representation of the model instance."""

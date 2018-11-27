@@ -1,0 +1,54 @@
+$switch-width: 52px;
+$switch-padding: 2px;
+$switch-height: 32px;
+$knob-size: $switch-height - ($switch-padding * 2);
+$knob-radius: $switch-height - ($switch-padding * 2);
+$knob-width: $knob-size;
+
+input[type="checkbox"]:not(old).switch {
+  opacity: 0;
+  position: absolute;
+  + label {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    height: $switch-height;
+    padding: 0 0 0 $switch-width + 12px;
+    line-height: $switch-height;
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      background: $form-color-input-background;
+      border-radius: $switch-height; // Round
+      width: $switch-width;
+      height: $switch-height;
+      z-index: $layer-high;
+    }
+    &:after {
+      position: absolute;
+      top: 2px;
+      right: 0;
+      bottom: 0;
+      left: 2px;
+      width: $knob-size;
+      height: $knob-size;
+      float: left;
+      border-radius: $knob-radius;
+      box-shadow: $ui-shadow;
+      content: ' ';
+      transition: all 0.3s ease;
+      z-index: $layer-higher;
+      background: $form-color-input-background;
+    }
+  }
+
+  &:checked + label {
+    &:before{
+      background: var(--primary-light);
+    }
+    &:after {
+      left: $switch-width - $knob-width - ($switch-padding);
+    }
+  }
+}

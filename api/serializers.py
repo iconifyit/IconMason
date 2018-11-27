@@ -94,5 +94,5 @@ class IconDetailSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Icon
-        fields = ('uuid', 'name', 'file', 'tags', 'icon_set')
+        fields = ('uuid', 'name', 'file', 'tags', 'icon_set', 'get_svg')
         read_only_fields = ('uuid',)

@@ -15,13 +15,11 @@ Including another URLconf
 """
 from django.urls import include, path
 from django.contrib import admin
-from django.conf.urls.static import static
-from iconviewer import settings
+import api.urls
+
+print(api.urls)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls'))
+    path('api/', include(api.urls)),
 ]
-urlpatterns = urlpatterns + static(
-    settings.STATIC_URL, document_root=settings.STATIC_ROOT
-)

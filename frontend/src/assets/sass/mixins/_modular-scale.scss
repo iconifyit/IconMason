@@ -1,0 +1,147 @@
+@charset "UTF-8";
+///
+/// Borrowed from bourbon.io
+///
+/// Increments up or down a defined scale and returns an adjusted value. This
+/// helps establish consistent measurements and spacial relationships throughout
+/// your project. We provide a list of commonly used scales as
+/// [pre-defined variables][scales].
+///
+/// [scales]: https://github.com/thoughtbot/bourbon/blob/master/core/bourbon/helpers/_scales.scss
+///
+/// @argument {number (unitless)} $increment
+///   How many steps to increment up or down the scale.
+///
+/// @argument {number (with unit) | list} $value [1em]
+///   The base value the scale starts at. Can also be set globally using the
+///   `modular-scale-base` key in the Bourbon settings.
+///
+/// @argument {number (unitless)} $ratio [1.25]
+///   The ratio the scale is built on. Can also be set globally using the
+///   `modular-scale-ratio` key in the Bourbon settings.
+///
+/// @return {number (with unit)}
+///
+/// @example scss
+///   .element {
+///     font-size: modular-scale(2);
+///   }
+///
+///   // CSS Output
+///   .element {
+///     font-size: 1.5625em;
+///   }
+///
+/// @example scss
+///   .element {
+///     margin-right: modular-scale(3, 2em);
+///   }
+///
+///   // CSS Output
+///   .element {
+///     margin-right: 3.90625em;
+///   }
+///
+/// @example scss
+///   .element {
+///     font-size: modular-scale(3, 1em 1.6em, $major-seventh);
+///   }
+///
+///   // CSS Output
+///   .element {
+///     font-size: 3em;
+///   }
+///
+/// @example scss
+///   // Globally change the base ratio
+///   $bourbon: (
+///     "modular-scale-ratio": 1.2,
+///   );
+///
+///   .element {
+///     font-size: modular-scale(3);
+///   }
+///
+///   // CSS Output
+///   .element {
+///     font-size: 1.728em;
+///   }
+///
+
+////
+/// Pre-defined scales for use with the `modular-scale` function.
+///
+/// @type number (unitless)
+///
+/// @see {function} modular-scale
+////
+
+$minor-second:     1.067;
+$major-second:     1.125;
+$minor-third:      1.2;
+$major-third:      1.25;
+$perfect-fourth:   1.333;
+$augmented-fourth: 1.414;
+$perfect-fifth:    1.5;
+$minor-sixth:      1.6;
+$golden:           1.618;
+$major-sixth:      1.667;
+$minor-seventh:    1.778;
+$major-seventh:    1.875;
+$octave:           2;
+$major-tenth:      2.5;
+$major-eleventh:   2.667;
+$major-twelfth:    3;
+$double-octave:    4;
+
+@function modular-scale(
+  $increment,
+  $value: 1rem,
+  $ratio: $major-second
+) {
+  $v1: nth($value, 1);
+  $v2: nth($value, length($value));
+  $value: $v1;
+
+  // scale $v2 to just above $v1
+  @while $v2 > $v1 {
+    $v2: ($v2 / $ratio); // will be off-by-1
+  }
+  @while $v2 < $v1 {
+    $v2: ($v2 * $ratio); // will fix off-by-1
+  }
+
+  // check AFTER scaling $v2 to prevent double-counting corner-case
+  $double-stranded: $v2 > $v1;
+
+  @if $increment > 0 {
+    @for $i from 1 through $increment {
+      @if $double-stranded and ($v1 * $ratio) > $v2 {
+        $value: $v2;
+        $v2: ($v2 * $ratio);
+      } @else {
+        $v1: ($v1 * $ratio);
+        $value: $v1;
+      }
+    }
+  }
+
+  @if $increment < 0 {
+    // adjust $v2 to just below $v1
+    @if $double-stranded {
+      $v2: ($v2 / $ratio);
+    }
+
+    @for $i from $increment through -1 {
+      @if $double-stranded and ($v1 / $ratio) < $v2 {
+        $value: $v2;
+        $v2: ($v2 / $ratio);
+      } @else {
+        $v1: ($v1 / $ratio);
+        $value: $v1;
+      }
+    }
+  }
+
+  @return $value;
+}

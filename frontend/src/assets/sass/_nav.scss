@@ -1,0 +1,265 @@
+
+// Cheat sheet
+// -----------
+// $layer-highest: 800;
+// $layer-higher: 700;
+// $layer-high: 600;
+// $layer-medium-high: 500;
+// $layer-medium: 400;
+// $layer-medium-low: 300;
+// $layer-low: 200;
+// $layer-lower: 100;
+// $layer-lowest: 0;
+nav.main {
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 4rem);
+  padding: .8rem 2rem 0 2rem;
+  @media only screen and (max-width: $screen-small) {
+    width: calc(100% - 2rem);
+    padding: .8rem 1rem 0 1rem;
+  }
+  height: $nav-height;
+  background: $nav-background;
+  overflow: visible;
+  z-index: $layer-medium-high;
+  border-bottom: 1px $nav-border-bottom solid;
+  box-shadow: 0 0 8px $ui-shadow;
+  // Home link logo and "Greenhost"
+  .title {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    a {
+      color: $nav-title;
+      font-family: $font-stack-heading;
+      font-size: modular-scale(6);
+      @media only screen and (max-width: $screen-small) {
+        font-size: modular-scale(4);
+      }
+      margin: 0 2rem 0 0;
+      text-decoration: none;
+      // Logo
+      img {
+        vertical-align: middle;
+        margin: 0 1.5rem 0 0;
+        width: 15rem;
+        height: 3rem;
+        @media screen and (max-width: $screen-small) {
+            width: 14rem;
+            height: 2.8rem;
+            margin: 0.2rem 0rem 0 0;
+        }
+      }
+    }
+  }
+}
+nav.main:not(.responsive) {
+  // Actual menu of the navbar
+  ul.menu {
+    position: relative;
+    float: right;
+    margin: 0;
+    padding: 0;
+    // Items in the navbar (i.e. not dropdown items)
+    > li {
+      display: inline-block;
+      z-index: $layer-high;
+      > a {
+        font-family: $font-stack-heading;
+        font-size: modular-scale(1);
+        color: $nav-foreground;
+        text-decoration: none;
+        display: block;
+        padding: 1rem 1.5rem;
+        // Can be used to show the visitor is currently here
+        &.current {
+          background-color: $nav-background-active;
+          color: $nav-foreground;
+        }
+      }
+      // Show a line under the item if it is not a dropdown.
+      &:not(.dropdown) a {
+        border-bottom: 2px transparent solid;
+        &:hover {
+          border-bottom: 2px $nav-hover-accent solid;
+        }
+      }
+    }
+
+    // Dropdown items
+    > li.dropdown {
+      > a:after {
+        content: ' ▾';
+      }
+      // Show the dropdown menu when hovering the li or when focussing on the
+      // link within the li, the latter will open the submenu but as soon
+      // as it is focussed the focus on this link is lost so we need some
+      // javascript to keep it open. The .focus class is used in Javascript.
+      a:focus + ul,
+      &:hover > ul,
+      &.focus > ul {
+        visibility: visible;
+        top: $nav-height - 1rem;
+        opacity: 1;
+      }
+
+      // Dropdown menu container
+      > ul {
+        position: absolute;
+        z-index: $layer-higher;
+        visibility: hidden; // Hide by default
+        opacity: 0;
+        background: $nav-background;
+        padding: 1.5rem;
+        box-shadow: 0px 0px 20px $ui-shadow;
+        margin: -5px 0 0 0;
+        top: $nav-height + 1rem;
+        transition: opacity .1s ease-in-out, top .2s ease-in-out;
+        border-radius: $base-border-radius;
+        &:before {
+          position: absolute;
+          left: 2rem;
+          top: -19px;
+          display: block;
+          content: "▲";
+          height: 20px;
+          width: 20px;
+          color: $nav-foreground;
+          font-size: 20px;
+        }
+        li {
+          display: block;
+          margin: 0;
+          white-space: nowrap;
+          a {
+            display: block;
+            width: 100%;
+            text-decoration: none;
+            padding: .5rem 1rem;
+          }
+        }
+      }
+    }
+    // If a dropdown menu is in the last position (far right) prevent it from
+    // being pushed off screen.
+    > li.dropdown:last-of-type > ul {
+      right: 0;
+      text-align: right;
+      &:before {
+        left: inherit;
+        right: 3rem;
+      }
+    }
+  }
+}
+
+// Menu open in responsive mode
+nav.main.responsive {
+  height: auto;
+  box-shadow: 0px 0px 20px $ui-shadow;
+  ul.menu {
+    position: relative;
+    display: block;
+    visibility: visible;
+    height: auto;
+    padding: 0;
+    z-index: $layer-medium;
+    li {
+      list-style: none;
+      display: block;
+    }
+    // Main items in the navbar
+    > li {
+      vertical-align: top;
+      z-index: $layer-high;
+      > a {
+        font-family: $font-stack-heading;
+        font-size: modular-scale(1);
+        color: $nav-foreground;
+        display: block;
+        padding: .5rem 1.5rem;
+        // Can be used to show the visitor is currently here
+        &.current {
+          background-color: $nav-background-active;
+          color: $nav-foreground;
+        }
+      }
+    }
+  }
+}
+
+$vega-button-width: 32px;
+$vega-button-height: 32px;
+$vega-button-line-height: 4px;
+$vega-button-line-distance: 6px;
+
+nav.main a.vegan-burger {
+  margin-top: .8rem;
+  padding: 0;
+  width: $vega-button-width;
+  height: $vega-button-height;
+  position: relative;
+  cursor: pointer;
+  transition: .25s ease-in-out;
+  text-decoration: none;
+  float: right;
+  &:focus {
+    outline: none;
+  }
+  span {
+    display: block;
+    position: absolute;
+    height: $vega-button-line-height;
+    width: 100%;
+    background: $color-secondary;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+  }
+
+  span:nth-child(1) {
+    top: 0;
+  }
+  span:nth-child(2) {
+    top: $vega-button-line-distance + $vega-button-line-height;
+    transition: .3s ease-in-out;
+  }
+  span:nth-child(3) {
+    top: $vega-button-line-distance * 2 + $vega-button-line-height * 2;
+  }
+}
+nav.main.responsive a.vegan-burger {
+  span:nth-child(1) {
+    transform: rotate(135deg);
+    top: $vega-button-line-distance + $vega-button-line-height;
+  }
+  span:nth-child(2) {
+    top: $vega-button-height;
+    opacity: 0;
+  }
+  span:nth-child(3) {
+    transform: rotate(-135deg);
+    top: $vega-button-line-distance + $vega-button-line-height;
+  }
+}
+
+ // On big screens hide the vegan-burger
+@media only screen and (min-width: $screen-large) {
+  nav.main a.vegan-burger {
+    display: none;
+  }
+}
+
+// On small screens hide everything but the logo, title link and the vegan-burger
+@media only screen and (max-width: $screen-large) {
+  nav.main {
+    ul.menu {
+      display: none;
+    }
+    a.vegan-burger {
+      display: inline-block;
+    }
+  }
+}

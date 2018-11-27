@@ -1,0 +1,57 @@
+$statusses: (
+  bad:  (
+    color: $status-color-bad-text,
+    border: $status-color-bad-dark,
+    background: $status-color-bad-light
+  ),
+  warn: (
+    color: $status-color-warn-text,
+    border: $status-color-warn-dark,
+    background: $status-color-warn-light
+  ),
+  good: (
+    color: $status-color-good-text,
+    border: $status-color-good-dark,
+    background: $status-color-good-light
+  ),
+  info: (
+    color: $status-color-info-text,
+    border: $status-color-info-dark,
+    background: $status-color-info-light
+  )
+);
+
+@mixin status-color() {
+  @each $status, $colors in $statusses {
+    // Redefine as global so we can use it in @content.
+    $colors: $colors !global;
+    // Define the actual color variable.
+    &.#{$status} {
+      background-color: map-get($colors, border);
+      color: color_var(ui, white);
+      // Allow to pass a block to this mixin.
+      @content;
+    }
+  }
+}
+
+@mixin status-style() {
+  @each $status, $colors in $statusses {
+    // Redefine as global so we can use it in @content.
+    $colors: $colors !global;
+    // Define the actual color variable.
+    &.#{$status} {
+      background-color: map-get($colors, background);
+      border-color: map-get($colors, border);
+      color: map-get($colors, color);
+      // Allow to pass a block to this mixin.
+      @content;
+      a, a:visited, a:active {
+        color: map-get($colors, color);
+      }
+      a:hover {
+        color: map-get($colors, border);
+      }
+    }
+  }
+}

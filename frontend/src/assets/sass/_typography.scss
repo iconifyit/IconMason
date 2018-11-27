@@ -1,0 +1,208 @@
+@include font-face(
+  "RobotoRegular",
+  "#{$static_dir}fonts/Roboto/RobotoRegular") {
+    font-style: normal;
+    font-weight: 400;
+  }
+@include font-face(
+  "RobotoLight",
+  "#{$static_dir}fonts/Roboto/RobotoLight") {
+    font-style: normal;
+    font-weight: 300;
+  }
+@include font-face(
+  "RobotoSlabRegular",
+  "#{$static_dir}fonts/RobotoSlab/RobotoSlabRegular") {
+    font-style: normal;
+    font-weight: 400;
+  }
+@include font-face(
+  "RobotoSlabLight",
+  "#{$static_dir}fonts/RobotoSlab/RobotoSlabLight") {
+    font-style: normal;
+    font-weight: 300;
+  }
+@include font-face(
+  "SourceCodePro",
+  "#{$static_dir}fonts/SourceCodePro/SourceCodeProMedium") {
+    font-style: normal;
+    font-weight: 500;
+    font-stretch: normal;
+  }
+
+
+
+$font-stack-regular: "RobotoRegular", sans-serif;
+$font-stack-regular-light: "RobotoLight", sans-serif;
+$font-stack-heading: "RobotoSlabRegular", sans-serif;
+$font-stack-heading-light: "RobotoSlabLight", sans-serif;
+$font-stack-source-code: "SourceCodePro", monospace;
+
+// Line height
+$base-line-height: 1.5;
+$heading-line-height: 1.2;
+
+html {
+  color: $color-text;
+  font-family: $font-stack-regular;
+  font-size: 100%;
+  line-height: $base-line-height;
+}
+
+#{$all-headings} {
+  column-span: all;
+  a {
+    text-decoration: none;
+    &:hover:before {
+      content: "¶";
+      color: #ddd;
+      float: left;
+      display: inline-block;
+      margin: 0 0 0 -1.8rem;
+      font-family: Arial sans-serif;
+    }
+  }
+}
+
+/*
+ * Disabled line under headers
+h1, h2 {
+  &:after {
+    margin-left: 2px;
+    height: 15px;
+    content: '';
+    display: block;
+    width: 40pt;
+    border-bottom: 2.5pt $heading-color-accent solid;
+  }
+}
+*/
+
+h1 {
+  font-family: $font-stack-heading;
+  font-size: modular-scale(6);
+  margin: 0 0 $base-spacing;
+  line-height: $heading-line-height;
+  color: $heading-color-h1;
+  a, a:hover {
+    color: $heading-color-h1;
+  }
+}
+
+h2, h3, h4, h5, h6 {
+  font-family: $font-stack-heading-light;
+  margin: 0 0 $small-spacing;
+  line-height: $heading-line-height;
+}
+h2 {
+  font-size: modular-scale(5);
+  color: $heading-color-h2;
+}
+h3 {
+  font-size: modular-scale(4);
+  color: $heading-color-h3;
+}
+h4 {
+  font-size: modular-scale(3);
+  color: $heading-color-h4;
+}
+h5 {
+  font-size: modular-scale(2);
+  color: $heading-color-h5;
+}
+h6 {
+  font-size: 90%;
+  color: $heading-color-h6;
+}
+
+p {
+  margin: 0 0 $small-spacing;
+}
+
+header {
+  font-family: $font-stack-heading;
+  font-size: modular-scale(1);
+  p {
+    margin: 1.5rem 0;
+    font-family: $font-stack-regular;
+  }
+}
+
+a {
+  color: $color-link;
+  text-decoration-skip: ink;
+  &:hover {
+    color: $color-link-active;
+  }
+  &:focus {
+    outline: $focus-outline-link;
+    outline-offset: $focus-outline-offset-link;
+  }
+}
+
+hr {
+  border-bottom: $base-border;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  margin: $base-spacing 0;
+}
+
+.columns-max-2 {
+  columns: 20rem 2;
+  column-gap: 3rem;
+}
+
+.columns-max-3 {
+  columns: 25rem 3;
+  column-gap: 3rem;
+}
+
+.slide-buttons {
+  font-family: $font-stack-heading;
+}
+main, section {
+  ul, ol {
+    li {
+      list-style-position: outside;
+      line-height: modular-scale(4);
+      padding: 0 0 0 0.8rem;
+      clear: both;
+      ul, ol {
+        padding: 0 0 0 0.8rem;
+      }
+    }
+  }
+  ul {
+    list-style-type: disc;
+    li {
+      ul {
+        list-style-type: square;
+        li {
+          ul {
+            list-style-type: circle;
+          }
+        }
+      }
+    }
+  }
+
+  ol {
+    list-style-type: decimal;
+    li {
+      ol {
+        list-style-type: lower-latin;
+        li {
+          ol {
+            list-style-type: decimal;
+            li {
+              ol {
+                list-style-type: upper-roman;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

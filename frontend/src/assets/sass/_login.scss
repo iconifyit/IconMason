@@ -1,0 +1,25 @@
+$login-width: 22rem;
+$login-height: 20rem;
+$login-padding: 2rem;
+form.login {
+  width: $login-width;
+  background: $login-background-color;
+  position: absolute;
+  width: $login-width;
+  top: calc(50% - #{$login-height / 2 + $login-padding});
+  left: calc(50% - #{$login-width / 2 + $login-padding});
+
+  border-radius: $base-border-radius;
+  header {
+    padding: $login-padding;
+    display: block;
+    width: 100%;
+    background: $login-header-background-color;
+    h2 {
+      color: $login-header-color
+    }
+  }
+  main {
+
+  }
+}

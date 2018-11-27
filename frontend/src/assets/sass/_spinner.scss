@@ -1,0 +1,28 @@
+$spinner-size: 2rem;
+
+.loading {
+  background: $spinner-background;
+  position: absolute;
+  width: 5rem;
+  top: calc(50% - 5rem);
+  left: calc(50% - 2.5rem);
+  text-align: center;
+  padding: 1rem;
+  border-radius: $base-border-radius;
+  .spinner {
+    border: $spinner-size/8 solid $spinner-secondary;
+    border-top: $spinner-size/8 solid $spinner-primary;
+    border-radius: 50%;
+    width: $spinner-size;
+    height: $spinner-size;
+    animation: spin .7s linear infinite;
+    margin-bottom: .5rem;
+    position: relative;
+    left: calc(50% - #{$spinner-size / 2} - #{$spinner-size / 8});
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

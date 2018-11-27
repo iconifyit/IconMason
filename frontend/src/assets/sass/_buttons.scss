@@ -1,0 +1,77 @@
+#{$all-buttons}, .button {
+  appearance: none;
+  background-color: $button-color-primary;
+  border: 1px $button-color-primary solid;
+  border-bottom: 3px $button-color-primary-emboss solid;
+  border-radius: $base-border-radius;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: $font-stack-regular;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 600;
+  line-height: 1;
+  padding: $small-spacing $base-spacing;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-shadow: 1px 1px 3px #000;
+
+  &:hover {
+    color: #fff;
+    background-color: $button-color-primary;
+  }
+
+  &:focus {
+    outline: $focus-outline-button;
+    outline-offset: $focus-outline-offset-button;
+  }
+
+  &:active {
+    border-bottom: 3px transparent solid;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      background-color: $button-color-primary;
+    }
+  }
+  @include status-color {
+    font-weight: bold;
+    border: 1px map-get($colors, color) solid;
+    border-bottom: 3px map-get($colors, border) solid;
+    &:active {
+      border-bottom: 3px transparent solid;
+    }
+    &:hover {
+      background-color: map-get($colors, border);
+    }
+  }
+  &.close, &.expand, &.delete {
+    background: transparent;
+    color: var(--primary);
+    border: 0;
+    font-size: modular-scale(3);
+    margin: -.4rem 0 0 0;
+    text-shadow: 1px 1px 1px rgba(0,0,0,.8);
+    padding: 0;
+  }
+}
+header {
+  #{$all-buttons}, .button {
+    &.close, &.expand, &.delete{
+      float: right;
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      margin: -.6rem 0 0 0;
+      font-size: modular-scale(5);
+    }
+  }
+}

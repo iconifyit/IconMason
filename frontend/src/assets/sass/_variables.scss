@@ -1,0 +1,48 @@
+$static_dir: "/static/";
+// Other Sizes
+$base-border-radius: 6px;
+$base-spacing: 1.5rem;
+$small-spacing: $base-spacing / 2;
+$base-z-index: 0;
+
+// Border
+$base-border: 1px solid $base-border-color;
+
+$screen-extra-small: 512px;
+$screen-small: 768px;
+$screen-medium: 834px;
+$screen-large: 992px;
+$screen-extra-large: 1200px;
+// Focus
+$focus-outline-color: $base-focus-color;
+
+$focus-outline-width-button: 3px;
+$focus-outline-button: $focus-outline-width-button solid $base-focus-color;
+$focus-outline-offset-button: 2px;
+
+$focus-outline-width-link: 1px;
+$focus-outline-link: $focus-outline-width-link solid $base-focus-color;
+$focus-outline-offset-link: 2px;
+
+// Animations
+$base-duration: 150ms;
+$base-timing: ease-in-out;
+
+// Define layers so we don't have to parse and remember the numbers.
+$layer-highest: 800;
+$layer-higher: 700;
+$layer-high: 600;
+$layer-medium-high: 500;
+$layer-medium: 400;
+$layer-medium-low: 300;
+$layer-low: 200;
+$layer-lower: 100;
+$layer-lowest: 0;
+
+$form-checkbox-size: 1.5rem;
+$form-checkbox-font-size: 1.4rem;
+$form-checkbox-border: 1px $form-color-checkbox-foreground solid;
+
+$nav-height: 4rem;
+
+$default-font-formats: ('woff2', 'woff', 'ttf', 'eot');

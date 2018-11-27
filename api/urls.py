@@ -16,28 +16,14 @@ Including another URLconf
 from django.urls import include, path
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework.schemas import get_schema_view
-from rest_framework.routers import DefaultRouter
-from api.views import IconViewSet
-from api.views import TagViewSet
-from api.views import IconSetViewSet
-from api.views import GroupViewSet
-from api.views import TreeViewSet
-
-
-UUID_RE = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
-
-router = DefaultRouter()
-router.register(r'icons', IconViewSet, basename='icon')
-router.register(r'tags', TagViewSet, basename='tag')
-router.register(r'groups', GroupViewSet, basename='group')
-router.register(r'tree', TreeViewSet, basename='tree')
-router.register(r'iconsets', IconSetViewSet, basename='iconset')
-
-
-schema_view = get_schema_view(title="Icon Viewer API")
+from rest_framework.authtoken import views
+import rest_framework.urls
+import api.routers
+import api.schema
 
 urlpatterns = [
-    url('^schema$', schema_view),
-    url(r'^auth/', include('rest_framework.urls')),
-] + router.urls
+    url('schema/', api.schema.schema),
+    url('', include(api.routers.router.urls)),
+    url('auth/', views.obtain_auth_token),
+    url('api-auth/', include(rest_framework.urls))
+]

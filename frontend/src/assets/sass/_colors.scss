@@ -1,0 +1,241 @@
+@function color_value($palette, $tone, $palettes: $palette-normal) {
+    @return map-get(map-get($palettes, $palette), $tone);
+}
+
+@function color_var($palette, $tone) {
+  @return var(--#{$palette}-#{$tone});
+}
+
+@function deep-map-merge($parent-map, $child-maps...) {
+  $result: $parent-map;
+  @each $child-map in $child-maps {
+    @each $key, $value in $child-map {
+      @if (not map-has-key($result, $key)) or
+          (type-of(map-get($result, $key)) != type-of($value)) or
+          (not (type-of(map-get($result, $key)) == map and
+          type-of($value) == map)) {
+            $result: map-merge($result, ($key: $value));
+      } @else {
+        $result: map-merge(
+          $result,
+          ($key: deep-map-merge(map-get($result, $key), $value))
+        );
+      }
+    }
+  }
+  @return $result;
+}
+
+@mixin fill-css-palette($palettes) {
+  @each $palette, $colors in $palettes {
+    @each $tone, $color in $colors {
+      --#{$palette}-#{$tone}: #{$color};
+    }
+  }
+}
+
+$palettes: (
+  normal: (
+    text: (
+      normal: #333,
+      light: #555,
+      link: #06c,
+      link-active: darken(#06c, 10),
+    ),
+    fg: (
+      primary: #06c,
+      primary-light: #08e,
+      secondary: #606,
+      secondary-light: #828,
+      accent: #363,
+      accent-light: #6a6,
+      // Not part of theme, required variations
+      primary-dark: rgba(darken(#06c, 20%), 0.5),
+    ),
+    bg: (
+      dark: #a0aaa0,
+      medium: #e0eae0,
+      light: #f0faf0,
+    ),
+    status: (
+      bad-dark: #a33,
+      bad-light: #faa,
+      warn-dark: #fa3,
+      warn-light: #fc8,
+      good-dark: #8a3,
+      good-light: #ad8,
+    ),
+    ui: (
+      shadow: rgba(0,0,0,.4),
+      white: #eaeaea,
+    ),
+    code: (
+      bg: #272822,
+      gutter: lighten(#272822, 10%),
+      lineos: #eee,
+      title-gradient-start: #272822,
+      title-gradient-stop: darken(#272822, 10%),
+      title: #eee,
+      title-border: #aaa,
+    )
+  ),
+  // Note: use reverse logic! The "darkest" colour will be the "lightest"!
+  inverse: (
+    text: (
+      normal: #efe,
+      light: #cdc,
+      link: #06c,
+      link-active: darken(#06c, 10),
+    ),
+    bg: (
+      dark: #ccc,
+      medium: #333,
+      light: #555,
+    ),
+  )
+);
+
+$palette-normal: map-get($palettes, normal);
+
+// Make sure there are no colour missing from inverse
+$palette-inverse: deep-map-merge($palette-normal, map-get($palettes, inverse));
+
+
+:root {
+  @include fill-css-palette($palette-normal);
+}
+:root[theme='dark'] {
+  @include fill-css-palette($palette-inverse);
+}
+
+// Theme-ing can now start..
+//
+// Now that we have a bunch of colour palettes in place we can assign colours of
+// all the HTML and composed UI elements here. Don't worry, when the elements
+// are not imported from the main SASS file, these values will not clutter the
+// CSS output.
+//
+// On the other hand, it does make it very easy to change the colour of an
+// element globally.
+
+// Primary colours, these are for common use so they all start with `color-`.
+$color-primary: color_var(fg, primary);
+$color-secondary: color_var(fg, secondary);
+$color-text: color_var(text, normal);
+$color-link: color_var(fg, primary-light);
+$color-link-active: color_var(text, link-active);
+
+$body-background: color_var(bg, light);
+$nav-background: color_var(bg, medium);
+$nav-foreground: color_var(fg, primary);
+$nav-title: color_var(fg, secondary);
+$nav-color-border: color_var(bg, dark);
+$nav-background-hover: color_var(bg, light);
+$nav-background-active: color_var(bg, dark);
+$nav-hover-accent: color_var(fg, accent);
+$nav-border-bottom: color_var(bg, dark);
+$icon-background: color_var(bg, medium);
+$icon-color-border-hover: color_var(bg, dark);
+$icon-background-hover: color_var(bg, light);
+$icon-color-border: color_var(bg, dark);
+$breadcrumb-background: $nav-background;
+$breadcrumb-active-background: $nav-background;
+$breadcrumb-hover-background: $nav-background;
+$breadcrumb-active-foreground: color_var(fg, accent);
+$breadcrumb-border: color_var(bg, dark);
+$breadcrumb-foreground: color_var(fg, secondary);
+
+
+// Typography
+$heading-color-accent: color_var(fg, primary);
+$heading-color-h1: color_var(fg, primary);
+$heading-color-h2: color_var(fg, primary);
+$heading-color-h3: $color-text;
+$heading-color-h4: color_var(fg, primary);
+$heading-color-h5: color_var(fg, secondary);
+$heading-color-h6: color_var(fg, accent);
+$heading-color-other: $color-text;
+
+//  UI Elements
+$status-color-bad-dark:   color_var(status, bad-dark);
+$status-color-bad-text:   color_var(status, bad-dark);
+$status-color-bad-light:  color_var(status, bad-light);
+$status-color-warn-dark:  color_var(status, warn-dark);
+$status-color-warn-text:  color_var(status, warn-dark);;
+$status-color-warn-light: color_var(status, warn-light);
+$status-color-good-dark:  color_var(status, good-dark);
+$status-color-good-text:  color_var(status, good-dark);
+$status-color-good-light: color_var(status, good-light);
+$status-color-info-dark:  color_var(fg, primary);
+$status-color-info-text:  color_var(fg, primary);
+$status-color-info-light: color_var(fg, primary-light);
+
+$status-colors: (
+  bad:  (
+    color: $status-color-bad-text,
+    border: $status-color-bad-dark,
+    background: $status-color-bad-light
+  ),
+  warn: (
+    color: $status-color-warn-text,
+    border: $status-color-warn-dark,
+    background: $status-color-warn-light
+  ),
+  good: (
+    color: $status-color-good-text,
+    border: $status-color-good-dark,
+    background: $status-color-good-light
+  ),
+  info: (
+    color: $status-color-info-text,
+    border: $status-color-info-dark,
+    background: $status-color-info-light
+  )
+);
+
+$button-color-primary: color_var(fg, primary);
+$button-color-primary-text: color_var(ui, white);
+$button-color-primary-emboss: darken(color_value(fg, primary), 10%);
+
+$form-color-shadow-focus: color_var(fg, primary-light);
+$form-color-shadow-hover: color_var(ui, shadow);
+$form-color-fieldset-border: color_var(fg, primary);
+$form-color-input-background: color_var(bg, light);
+$form-color-checkbox-foreground: color_var(fg, primary);
+$form-color-checkbox-check-shadow: color_var(fg, primary-dark);
+
+$progress-bar-color-primary: color_var(fg, primary);
+$progress-bar-color-bad: color_var(status, bad-dark);
+$progress-bar-color-warn: color_var(status, warn-dark);
+
+$table-background-default: color_var(fg, secondary-light);
+$table-background-colorful: color_var(fg, secondary-light);
+$table-header-background-default: color_var(fg, secondary-light);
+$table-header-background-colorful: color_var(fg, primary);
+$table-row-background-odd: color_var(fg, secondary-light);
+$table-row-background-even: color_var(fg, secondary-light);
+
+$source-code-block-title-background-start: color_var(code, title-gradient-start);
+$source-code-block-title-background-stop: color_var(code, title-gradient-stop);
+$source-code-block-gutter: color_var(code, gutter);
+$source-code-block-lineos: color_var(code, lineos);
+$source-code-block-title-border: color_var(code, title-border);
+
+$source-code-inline-background: color_var(fg, secondary-light);
+$source-code-inline-color: color_var(fg, primary-light);
+$source-code-block-title-text: color_var(code, title);
+
+$search-border-color: color_var(fg, secondary);
+
+$login-background-color: color_var(bg, light);
+$login-header-background-color: color_var(fg, primary);
+$login-header-color: color_var(bg, medium);
+
+$base-focus-color: color_var(fg, secondary);
+$base-border-color: color_var(fg, primary);
+
+$ui-shadow: color_var(ui, shadow);
+
+$spinner-background: color_var(bg, dark);
+$spinner-primary: color_var(fg, primary);
+$spinner-secondary: color_var(fg, secondary);

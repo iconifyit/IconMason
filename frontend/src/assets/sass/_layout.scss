@@ -1,0 +1,105 @@
+$nav-column-width: 17rem;
+$icon-size: 10rem;
+body .container section {
+  display: flex;
+  align-items: stretch;
+  align-content: flex-start;
+  justify-content: space-around;
+  margin: 0 2rem 0 2rem;
+  min-height: calc(100vh - #{$nav-height});
+
+  > nav {
+    display: flex;
+    align-items: stretch;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    flex: #{$nav-column-width + 1rem} 0 0;
+    //@media only screen and (min-width: $screen-extra-large) {
+    //  flex: 33rem 1 0;
+    //}
+    padding: .5rem 1rem 0 0;
+    margin: 0;
+    justify-content: space-between;
+    border-right: 3px $nav-color-border solid;
+    > nav {
+      flex: #{$nav-column-width} 0 0;
+      padding: .5rem .5rem;
+      margin-bottom: 1rem;
+      background: $nav-background;
+      border-radius: $base-border-radius;
+      header {
+        margin: .5rem;
+      }
+      button {
+        border-radius: $base-border-radius;
+        font-size: modular-scale(1);
+        width: calc(100% - 2rem);
+        text-align: left;
+        cursor: pointer;
+        display: block;
+        border: 0;
+        background: $nav-background;
+        color: $nav-foreground;
+        padding: .2rem 1rem;
+        &:hover {
+          background: $nav-background-hover;
+        }
+        &.active {
+          background: $nav-background-active;
+        }
+        &:before {
+          position: relative;
+          display: inline-block;
+          width: 1rem;
+          height: 1rem;
+        }
+        &.more:after {
+          content: '[+]';
+        }
+      }
+      ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        > li {
+          > ul {
+            padding-left: .5rem;
+            > ul {
+              padding-left: .5rem;
+              > ul {
+                padding-left: .5rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  main {
+    position: relative;
+    flex: 100rem 0 1;
+    section {
+      display: flex;
+      align-items: stretch;
+      align-content: flex-start;
+      flex-wrap: wrap;
+      flex: 1 0;
+      .icon {
+        display: inline-block;
+        padding: 1rem;
+        margin: .5rem;
+        flex: 0 0;
+        background: $icon-background;
+        border: 2px $icon-color-border solid;
+        img {
+          width: $icon-size;
+          height: $icon-size;
+        }
+        &:hover {
+          border: 2px $icon-color-border-hover solid;
+          background: $icon-background-hover;
+        }
+      }
+    }
+  }
+}

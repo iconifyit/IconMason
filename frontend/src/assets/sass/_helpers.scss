@@ -1,0 +1,6 @@
+// Typography
+$all-headings: "h1, h2, h3, h4, h5, h6";
+// Forms
+$all-text-inputs: "input[type=text], input[type=password], textarea";
+$all-form-elements: "{$all-text-inputs}, select, checkbox, radio";
+$all-buttons: "[type=submit] button";
