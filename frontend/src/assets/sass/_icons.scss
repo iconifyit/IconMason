@@ -1,0 +1,84 @@
+$icon-size: 6rem;
+$icon-detail-size: 12rem;
+
+html[theme="dark"] {
+  main section.grid figure svg,
+  main .modal figure svg {
+    *:not([fill="none"]):not([class]) {
+      fill: #fff;
+    }
+  }
+}
+
+// Icon in grid
+main section.grid figure {
+  padding: 1rem;
+  margin: .5rem;
+  flex: 0 0;
+  background: $icon-background;
+  border: 2px $icon-color-border solid;
+  border-radius: $base-border-radius;
+  cursor: pointer;
+  img, svg {
+    width: $icon-size;
+    height: $icon-size;
+  }
+  &:hover {
+    border: 2px $icon-color-border-hover solid;
+    background: $icon-background-hover;
+  }
+}
+
+// Icon details
+.modal {
+  min-width: 80vw;
+  main {
+    overflow-y: scroll;
+    max-height: calc(100vh - #{$nav-height} - 20rem);
+    max-width: calc(80vw - 5rem);
+    figure {
+      float: right;
+      margin-right: 1rem;
+      padding: 4.5rem;
+      background: $blue-print-background;
+      background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+      background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+      background-image: linear-gradient($blue-print-grid 2px, transparent 2px),
+                        linear-gradient(90deg, $blue-print-grid 2px, transparent 2px),
+                        linear-gradient($blue-print-grid-dark 1.1px, transparent 1.1px),
+                        linear-gradient(90deg, $blue-print-grid-dark 1.1px, transparent 1.1px);
+      img, svg {
+        width: $icon-detail-size;
+        height: $icon-detail-size;
+      }
+    }
+    article {
+      display: block;
+      position: relative;
+      width: calc(80vw - #{$icon-detail-size} - 19rem);
+      float: left;
+      .source {
+        position: relative;
+        .highlight {
+          overflow: scroll;
+        }
+      }
+      table {
+        position: relative;
+        width: calc(80vw - #{$icon-detail-size} - 19rem);
+      }
+    }
+  }
+  footer .tag {
+    display: inline-block;
+    background: $tag-color-background;
+    color: $tag-color;
+    margin: .5rem .5rem .5rem 0;
+    padding: .2rem .5rem;
+    border-radius: $base-border-radius;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

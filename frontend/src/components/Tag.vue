@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 <template>
-  <a href="#">{{tag.name}}</a>
+  <a class="tag" href="#">{{tag.name}}</a>
 </template>
 
 <script>

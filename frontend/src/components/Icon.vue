@@ -1,19 +1,18 @@
 // eslint-disable-next-line
 <template>
-  <div class="icon">
-    <header>{{icon.name}}</header>
-    <img :src="icon.file" />
-    <footer>
-      <Icon v-for="(tag, index) in icon.tags" :tag="tag" :key="index" />
-    </footer>
-  </div>
+  <figure @click="openIconDetail" v-html="icon.svg_data"></figure>
 </template>
 
 <script>
-  import Tag from '@/components/Tag.vue'
+  import Tag from '@/components/Tag'
   export default {
     name: 'Icon',
     props: ['icon'],
-    components: { Tag }
+    components: { Tag },
+    methods: {
+      openIconDetail () {
+        this.$emit('openIconDetail', this.icon)
+      }
+    }
   }
 </script>

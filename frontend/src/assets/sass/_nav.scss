@@ -10,14 +10,16 @@
 // $layer-low: 200;
 // $layer-lower: 100;
 // $layer-lowest: 0;
+$nav-padding: .8rem;
+$nav-height-total: $nav-height + $nav-padding;
 nav.main {
   position: relative;
   display: inline-block;
   width: calc(100% - 4rem);
-  padding: .8rem 2rem 0 2rem;
+  padding: $nav-padding 2rem 0 2rem;
   @media only screen and (max-width: $screen-small) {
     width: calc(100% - 2rem);
-    padding: .8rem 1rem 0 1rem;
+    padding: $nav-padding 1rem 0 1rem;
   }
   height: $nav-height;
   background: $nav-background;
@@ -30,7 +32,7 @@ nav.main {
     display: inline-block;
     padding: 0;
     margin: 0;
-    a {
+    a{
       color: $nav-title;
       font-family: $font-stack-heading;
       font-size: modular-scale(6);
@@ -65,7 +67,9 @@ nav.main:not(.responsive) {
     > li {
       display: inline-block;
       z-index: $layer-high;
-      > a {
+      > a, > button {
+        border: none;
+        background: none;
         font-family: $font-stack-heading;
         font-size: modular-scale(1);
         color: $nav-foreground;
@@ -77,20 +81,39 @@ nav.main:not(.responsive) {
           background-color: $nav-background-active;
           color: $nav-foreground;
         }
+        &.big {
+          font-weight: bold;
+          font-size: modular-scale(4);
+        }
+      }
+      >button {
+        padding: 1rem .6rem;
+        img {
+          vertical-align: bottom;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+      >button:disabled {
+        color: $color-text-light;
       }
       // Show a line under the item if it is not a dropdown.
-      &:not(.dropdown) a {
-        border-bottom: 2px transparent solid;
-        &:hover {
-          border-bottom: 2px $nav-hover-accent solid;
+      &:not(.dropdown) {
+        a, button {
+          border-bottom: 2px transparent solid;
+          &:hover {
+            border-bottom: 2px $nav-hover-accent solid;
+          }
         }
       }
     }
 
     // Dropdown items
     > li.dropdown {
-      > a:after {
-        content: ' ▾';
+      > a, button {
+        &:after {
+          content: ' ▾';
+        }
       }
       // Show the dropdown menu when hovering the li or when focussing on the
       // link within the li, the latter will open the submenu but as soon
@@ -100,7 +123,7 @@ nav.main:not(.responsive) {
       &:hover > ul,
       &.focus > ul {
         visibility: visible;
-        top: $nav-height - 1rem;
+        top: $nav-height + .4rem;
         opacity: 1;
       }
 
@@ -113,19 +136,19 @@ nav.main:not(.responsive) {
         background: $nav-background;
         padding: 1.5rem;
         box-shadow: 0px 0px 20px $ui-shadow;
-        margin: -5px 0 0 0;
-        top: $nav-height + 1rem;
+        margin: -16px 0 0 0;
+        top: $nav-height + 1.4rem;
         transition: opacity .1s ease-in-out, top .2s ease-in-out;
         border-radius: $base-border-radius;
         &:before {
           position: absolute;
           left: 2rem;
-          top: -19px;
+          top: -23px;
           display: block;
           content: "▲";
           height: 20px;
           width: 20px;
-          color: $nav-foreground;
+          color: $nav-background;
           font-size: 20px;
         }
         li {
@@ -133,6 +156,7 @@ nav.main:not(.responsive) {
           margin: 0;
           white-space: nowrap;
           a {
+            color: $nav-foreground;
             display: block;
             width: 100%;
             text-decoration: none;

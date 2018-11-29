@@ -2,9 +2,9 @@ $table-margin-horizontal: 2rem;
 
 table:not(.rouge-table) {
   border-collapse: collapse;
-  margin: $base-spacing $table-margin-horizontal / 5;
+  margin: $base-spacing 0;
   @media only screen and (min-width: $screen-extra-large) {
-    margin: $base-spacing $table-margin-horizontal;
+    margin: $base-spacing 0;
   }
   text-align: left;
   background: $table-background-default;
@@ -60,10 +60,10 @@ table:not(.rouge-table) {
     }
     tbody {
       tr:nth-child(odd) {
-        background: tint($table-row-background-odd, 80%);
+        background: $table-row-background-odd;
       }
       tr:nth-child(even) {
-        background: tint($table-row-background-even, 80%);
+        background: $table-row-background-even;
       }
     }
   }

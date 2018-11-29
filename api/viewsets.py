@@ -1,25 +1,32 @@
 import uuid
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
-from django.shortcuts import get_object_or_404
 from api.serializers import IconSerializer
 from api.serializers import IconDetailSerializer
 from api.serializers import IconSetSerializer
-from api.serializers import IconSetDetailSerializer
 from api.serializers import TagSerializer
 from api.serializers import TagDetailSerializer
 from api.serializers import GroupSerializer
-from api.serializers import TreeSerializer
 from iconviewer.models.tag import Tag
 from iconviewer.models.group import Group
 from iconviewer.models.iconset import IconSet
 from iconviewer.models.icon import Icon
 
+
+def get_uuid_params(request, *params):
+    ret_params = {}
+    for param in params:
+        value = request.query_params.get(param)
+        if value:
+            ret_params[param] = uuid.UUID(hex=value)
+    return ret_params
 
 
 class ResultsSetPagination(PageNumberPagination):
@@ -51,38 +58,30 @@ class IconViewSet(viewsets.ReadOnlyModelViewSet):
             as_attachment=True
         )
 
-    def get_uuid_params(self, *params):
-        ret_params = {}
-        for param in params:
-            value = self.request.query_params.get(param)
-            if value:
-                ret_params[param] = uuid.UUID(hex=value)
-        return ret_params
-
     def get_queryset(self):
-        params = self.get_uuid_params('group', 'iconset', 'node')
+        params = get_uuid_params(self.request, 'group', 'iconset', 'node')
         queryset = Icon.objects.all()
-
+        node_filter = Q()
         if 'node' in params:
-            queryset = queryset.filter(
-                icon_set__group__uuid__exact=params['node'].urn
-            ) | queryset.filter(
-                icon_set__uuid__exact=params['node'].urn
-            )
+            node_filter = Q(icon_set__group__uuid__exact=params['node'].urn)
+            node_filter |= Q(icon_set__uuid__exact=params['node'].urn)
         elif 'group' in params or 'node' in params:
-            queryset = queryset.filter(
-                icon_set__group__uuid__exact=params['group'].urn
-            )
+           node_filter = Q(icon_set__group__uuid__exact=params['group'].urn)
         elif 'iconset' in params:
-            queryset = queryset.filter(
-                icon_set__uuid__exact   =params['iconset'].urn
-            )
+           node_filter = Q(icon_set__uuid__exact   =params['iconset'].urn)
 
+        query = self.request.query_params.get('query', None)
+        query_filter = Q()
+        if query:
+            for field in self.search_fields:
+                query_filter |= Q(**{"{}__icontains".format(field): query})
+
+        queryset = queryset.filter(node_filter & query_filter)
         return queryset
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Get a list of tags."""
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.all().order_by("name")
     serializer_class = TagSerializer
     permission_classes=[IsAuthenticated]
     pagination_class = ResultsSetPagination
@@ -95,30 +94,35 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     """Get a list of groups."""
-
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by("name")
     serializer_class = GroupSerializer
     permission_classes=[IsAuthenticated]
     pagination_class = ResultsSetPagination
 
+    def get_queryset(self):
+        params = get_uuid_params(self.request, 'group')
+        queryset = Group.objects.all().order_by("name")
 
-class TreeViewSet(GroupViewSet):
-    """Get a hierarchical list of groups and sets."""
-    queryset = Group.objects.filter(group__isnull=True)
-    serializer_class = TreeSerializer
-    permission_classes=[IsAuthenticated]
-    pagination_class = ResultsSetPagination
+        if 'group' in params:
+            queryset = queryset.filter(group__uuid__exact=params['group'].urn)
+        else:
+            queryset = queryset.filter(group__isnull=True)
+
+        return queryset
 
 
 class IconSetViewSet(viewsets.ReadOnlyModelViewSet):
     """Get a list of icon sets."""
 
-    queryset = IconSet.objects.all()
     serializer_class = IconSetSerializer
     permission_classes=[IsAuthenticated]
     pagination_class = ResultsSetPagination
 
-    def retrieve(self, request, pk=None):
-        tag = get_object_or_404(self.queryset, pk=pk)
-        serializer = IconSetDetailSerializer(tag, context={'request': request})
-        return Response(serializer.data)
+    def get_queryset(self):
+        params = get_uuid_params(self.request, 'group')
+        queryset = IconSet.objects.all().order_by("name")
+
+        if 'group' in params:
+            queryset = queryset.filter(group__uuid__exact=params['group'].urn)
+
+        return queryset

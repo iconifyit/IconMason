@@ -51,11 +51,12 @@ $palettes: (
       accent-light: #6a6,
       // Not part of theme, required variations
       primary-dark: rgba(darken(#06c, 20%), 0.5),
+      link: #08e,
     ),
     bg: (
-      dark: #a0aaa0,
-      medium: #e0eae0,
-      light: #f0faf0,
+      dark: #ccc,
+      medium: #eaeaea,
+      light: #fcfcfc,
     ),
     status: (
       bad-dark: #a33,
@@ -77,6 +78,11 @@ $palettes: (
       title-gradient-stop: darken(#272822, 10%),
       title: #eee,
       title-border: #aaa,
+    ),
+    blueprint: (
+      background: #aaa,
+      grid: #efe,
+      grid-dark: #888,
     )
   ),
   // Note: use reverse logic! The "darkest" colour will be the "lightest"!
@@ -88,10 +94,18 @@ $palettes: (
       link-active: darken(#06c, 10),
     ),
     bg: (
-      dark: #ccc,
-      medium: #333,
-      light: #555,
+      dark: #201010,
+      medium: #222,
+      light: #202020,
     ),
+    fg: (
+      link: #efe,
+    ),
+    blueprint: (
+      background: #222,
+      grid: #aaa,
+      grid-dark: #888,
+    )
   )
 );
 
@@ -101,10 +115,10 @@ $palette-normal: map-get($palettes, normal);
 $palette-inverse: deep-map-merge($palette-normal, map-get($palettes, inverse));
 
 
-:root {
+html:root {
   @include fill-css-palette($palette-normal);
 }
-:root[theme='dark'] {
+html[theme='dark']:root * {
   @include fill-css-palette($palette-inverse);
 }
 
@@ -122,12 +136,13 @@ $palette-inverse: deep-map-merge($palette-normal, map-get($palettes, inverse));
 $color-primary: color_var(fg, primary);
 $color-secondary: color_var(fg, secondary);
 $color-text: color_var(text, normal);
+$color-text-light: color_var(text, light);
 $color-link: color_var(fg, primary-light);
 $color-link-active: color_var(text, link-active);
 
 $body-background: color_var(bg, light);
 $nav-background: color_var(bg, medium);
-$nav-foreground: color_var(fg, primary);
+$nav-foreground: color_var(fg, link);
 $nav-title: color_var(fg, secondary);
 $nav-color-border: color_var(bg, dark);
 $nav-background-hover: color_var(bg, light);
@@ -138,6 +153,8 @@ $icon-background: color_var(bg, medium);
 $icon-color-border-hover: color_var(bg, dark);
 $icon-background-hover: color_var(bg, light);
 $icon-color-border: color_var(bg, dark);
+$tag-color: color_var(ui, white);
+$tag-color-background: color_var(fg, secondary);
 $breadcrumb-background: $nav-background;
 $breadcrumb-active-background: $nav-background;
 $breadcrumb-hover-background: $nav-background;
@@ -145,6 +162,13 @@ $breadcrumb-active-foreground: color_var(fg, accent);
 $breadcrumb-border: color_var(bg, dark);
 $breadcrumb-foreground: color_var(fg, secondary);
 
+$modal-header-background-color: color_var(fg, secondary);
+$modal-background-color: color_var(bg, medium);
+$modal-header-color: color_var(ui, white);
+
+$blue-print-background: color_var(blueprint, background);
+$blue-print-grid: color_var(blueprint, grid);
+$blue-print-grid-dark: color_var(blueprint, grid-dark);
 
 // Typography
 $heading-color-accent: color_var(fg, primary);
@@ -197,6 +221,11 @@ $button-color-primary: color_var(fg, primary);
 $button-color-primary-text: color_var(ui, white);
 $button-color-primary-emboss: darken(color_value(fg, primary), 10%);
 
+$button-color-light: color_var(bg, medium);
+$button-color-light-hover: color_var(bg, light);
+$button-color-light-text: color_var(text, normal);
+
+$form-color-text: color_var(text, normal);
 $form-color-shadow-focus: color_var(fg, primary-light);
 $form-color-shadow-hover: color_var(ui, shadow);
 $form-color-fieldset-border: color_var(fg, primary);
@@ -208,12 +237,12 @@ $progress-bar-color-primary: color_var(fg, primary);
 $progress-bar-color-bad: color_var(status, bad-dark);
 $progress-bar-color-warn: color_var(status, warn-dark);
 
-$table-background-default: color_var(fg, secondary-light);
-$table-background-colorful: color_var(fg, secondary-light);
-$table-header-background-default: color_var(fg, secondary-light);
-$table-header-background-colorful: color_var(fg, primary);
-$table-row-background-odd: color_var(fg, secondary-light);
-$table-row-background-even: color_var(fg, secondary-light);
+$table-background-default: color_var(bg, medium);
+$table-background-colorful: color_var(bg, medium);
+$table-header-background-default: color_var(bg, dark);
+$table-header-background-colorful: color_var(fg, secondary);
+$table-row-background-odd: color_var(bg, medium);
+$table-row-background-even: color_var(bg, light);
 
 $source-code-block-title-background-start: color_var(code, title-gradient-start);
 $source-code-block-title-background-stop: color_var(code, title-gradient-stop);

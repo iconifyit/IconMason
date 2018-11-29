@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 <template>
-  <div class="container">
+  <section class="container">
     <header>
       <Nav :auth="auth" @logout="doLogout"/>
     </header>
@@ -9,15 +9,13 @@
       @doLoading="doLoading"
       :auth="auth"
     ></router-view>
-    <div class="loading" v-if="loading===true">
-      <div class="spinner"></div>
-      Loading&#8230;
-    </div>
-  </div>
+    <Loading :loading="loading" />
+  </section>
 </template>
 <script>
-import responsiveNav from '@/navigation'
+import responsiveNav from '@/utilities/navigation'
 import Nav from '@/components/nav'
+import Loading from '@/components/loading'
 export default {
   name: 'app',
   props: ['auth'],
@@ -27,7 +25,8 @@ export default {
     }
   },
   components: {
-    Nav
+    Nav,
+    Loading
   },
   mounted () {
     responsiveNav('nav.main')
@@ -36,7 +35,7 @@ export default {
     doLogin (token) {
       this.auth.authenticated = true
       this.auth.authToken = token
-      console.log(this.$root.client)
+      // Add the authorization token when we have it.
       this.$root.client.defaults.headers.common['Authorization'] = `Token: $(token)`
       sessionStorage.authToken = token
       this.$router.push(this.$route.query.from || '/')

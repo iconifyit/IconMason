@@ -14,7 +14,7 @@ class TagSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Tag
-        fields = ('name', 'url')
+        fields = ('name', 'id')
 
 
 class IconSetSerializer(HyperlinkedModelSerializer):
@@ -22,7 +22,7 @@ class IconSetSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = IconSet
-        fields = ('uuid', 'name', 'url')
+        fields = ('uuid', 'name')
         read_only_fields = ('uuid',)
 
 
@@ -31,18 +31,7 @@ class GroupSerializer(ModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Group
-        fields = ('uuid', 'name', 'sort', 'groups', 'group')
-        read_only_fields = ('uuid',)
-
-
-class TreeSerializer(ModelSerializer):
-    """Serializer to map the Group model instance into JSON format."""
-    groups = RecursiveField(required=False, allow_null=True, many=True)
-    iconsets = IconSetSerializer(required=False, allow_null=True, many=True)
-    class Meta:
-        """Meta class to map serializer's fields with the model fields."""
-        model = Group
-        fields = ('uuid', 'name', 'sort', 'groups', 'iconsets')
+        fields = ('uuid', 'name', 'sort', 'groups', 'group', 'iconsets')
         read_only_fields = ('uuid',)
 
 
@@ -53,18 +42,8 @@ class IconSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Icon
-        fields = ('uuid', 'name', 'file', 'tags', 'url')
-        read_only_fields = ('uuid',)
-
-
-class IconSetDetailSerializer(HyperlinkedModelSerializer):
-    """Serializer to map the IconSet model instance into JSON format."""
-    icons = IconSerializer(required=False, allow_null=True, many=True)
-    class Meta:
-        """Meta class to map serializer's fields with the model fields."""
-        model = IconSet
-        fields = ('uuid', 'name', 'group', 'icons')
-        read_only_fields = ('uuid',)
+        fields = ('uuid', 'name', 'file', 'tags', 'url', 'svg_data')
+        read_only_fields = ('uuid', 'svg_data')
 
 
 class IconSetReverseSerializer(HyperlinkedModelSerializer):
@@ -94,5 +73,5 @@ class IconDetailSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Icon
-        fields = ('uuid', 'name', 'file', 'tags', 'icon_set', 'get_svg')
-        read_only_fields = ('uuid',)
+        fields = ('uuid', 'name', 'file', 'svg_source', 'tags', 'icon_set')
+        read_only_fields = ('uuid', 'svg_source')

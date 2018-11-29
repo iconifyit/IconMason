@@ -1,12 +1,12 @@
-export default (iconData) => {
+export default (filename, iconData) => {
   let a = document.createElement('a')
   document.body.appendChild(a)
   a.style = 'display: none'
-  let blob = new Blob([iconData.svg], {type: 'image/svg+xml;charset=utf-8'})
-  let url = window.URL.createObjectURL(blob)
+  let blob = new Blob([iconData], {type: 'image/svg+xml;charset=utf-8'})
+  let url = URL.createObjectURL(blob)
   a.href = url
-  a.download = iconData.file
+  a.download = filename
   a.click()
-  window.URL.revokeObjectURL(url)
+  URL.revokeObjectURL(url)
   a.parentNode.removeChild(a)
 }

@@ -9,6 +9,7 @@ $spinner-size: 2rem;
   text-align: center;
   padding: 1rem;
   border-radius: $base-border-radius;
+  z-index: $layer-highest;
   .spinner {
     border: $spinner-size/8 solid $spinner-secondary;
     border-top: $spinner-size/8 solid $spinner-primary;

@@ -1,10 +1,15 @@
 """Store the data meta data attributes of an icon."""
 import uuid
+import re
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from iconviewer.models.iconset import IconSet
 from iconviewer.models.tag import Tag
 from iconviewer.settings import MEDIA_ROOT
+from pygments import highlight
+from pygments.lexers import XmlLexer
+from pygments.formatters import HtmlFormatter
+from defusedxml.minidom import parseString
 
 
 class Icon(models.Model):
@@ -38,8 +43,16 @@ class Icon(models.Model):
         max_length=200
     )
 
-    def get_svg(self):
+    @property
+    def svg_data(self):
         return self.file.read()
+
+    @property
+    def svg_source(self):
+        parsed = parseString(self.svg_data)
+        pretty = parsed.toprettyxml(indent="  ", newl="\n")
+        pretty = "\n".join([l for l in pretty.split("\n") if l.strip()])
+        return highlight(pretty, XmlLexer(), HtmlFormatter())
 
     def __str__(self):
         """Return a human readable representation of the model instance."""

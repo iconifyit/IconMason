@@ -1,6 +1,6 @@
 // Blur everything in the background, i.e. not the modal.
-body.modal-active {
-  >*:not(.modal-wrapper) {
+section.modal-active {
+  section, nav{
     filter: blur(3px) grayscale(90%);
   }
 }
@@ -19,12 +19,12 @@ body.modal-active {
   align-content: center;
   align-items: center;
   &.curtain {
-    background: rgba(#fff, .4);
+    background: $ui-shadow;
   }
   .modal {
-    flex: 0 1 40rem;
+    flex: 0 1 50rem;
     background: $modal-background-color;
-    box-shadow: 2rem 2rem 3rem rgba(#000, 0.8);
+    box-shadow: 2rem 2rem 3rem $ui-shadow;
     margin: 1rem;
     border-radius: $base-border-radius;
     border: 2px $modal-header-background-color solid;
@@ -34,7 +34,21 @@ body.modal-active {
       padding: 2rem 2rem 1rem 2rem;
       h5 {
         color: $modal-header-color;
-        text-shadow: .2rem .2rem .1rem rgba(#000, .8);
+        text-shadow: .2rem .2rem .1rem $ui-shadow;
+      }
+      a.close {
+        background: transparent;
+        border: 0;
+        color: $modal-header-color;
+        text-decoration: none;
+        float: right;
+        font-size: modular-scale(7);
+        margin: -.6rem 0 0 0;
+        padding: 0;
+        position: absolute;
+        right: 2rem;
+        text-shadow: .2rem .2rem .1rem $ui-shadow;
+        top: 1.3rem;
       }
     }
     main {
@@ -52,7 +66,7 @@ body.modal-active {
       flex-flow: row nowrap;
       align-content: center;
       align-items: flex-end;
-      border-top: 1px var(--secondary-light) solid;
+      border-top: 1px $modal-header-background-color solid;
       button {
         flex: 0;
         margin-left: 1rem;

@@ -6,31 +6,34 @@ div.highlight {
     display: block;
     width: 100%;
   }
-
   max-width: 100%;
   display: block;
   width: 100%;
   margin: 0 0 1rem 0;
-  border-radius: $base-border-radius;
+  border-radius: 0 0 $base-border-radius $base-border-radius;
   pre.highlight {
-    border-radius: $base-border-radius;
     overflow: auto;
     font-family: $font-stack-source-code;
+    margin: 0 0 1rem 0;
+    border-radius: 0 0 $base-border-radius $base-border-radius;
     code {
       table {
         border-spacing:0;
-        border-radius: $base-border-radius;
+        border-radius: 0 0 $base-border-radius $base-border-radius;
         tbody {
           tr {
             td.rouge-gutter {
               user-select: none;
               background: $source-code-block-gutter;
-              border-radius: $base-border-radius 0 0 $base-border-radius;
+              border-radius: 0 0 0 $base-border-radius;
               padding: .5rem;
               pre {
                 user-select: none;
                 text-align: right;
               }
+            }
+            td.rouge-code {
+              border-radius: 0 0 $base-border-radius 0;
             }
             td.rouge-code pre {
               padding: .5rem;
@@ -72,23 +75,6 @@ p.code-title {
   font-weight: bold;
   display: block;
   border-bottom: 1px $source-code-block-title-border, solid;
-  +div.highlight {
-    pre.highlight {
-      margin: 0 0 1rem 0;
-      border-radius: 0 0 $base-border-radius $base-border-radius;
-      table {
-        border-radius: 0 0 $base-border-radius $base-border-radius;
-        tbody tr {
-          td.rouge-gutter {
-            border-radius: 0 0 0 $base-border-radius;
-          }
-          td.rouge-code {
-            border-radius: 0 0 $base-border-radius 0;
-          }
-        }
-      }
-    }
-  }
 }
 
 

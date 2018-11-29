@@ -1,24 +1,50 @@
 // eslint-disable-next-line
 <template>
-  <section>
-    <header>
-      <h1>Icons</h1>
-    </header>
-    <Icon v-for="(icon, index) in icons" :icon="icon" :key="index" />
-  </section>
+  <main>
+    <section class="grid">
+      <SearchBar @doQuery="doQuery" />
+      <Icon
+        v-for="(icon, index) in icon_data.results"
+        :icon="icon"
+        :key="index"
+        @openIconDetail="openIconDetail"
+      />
+    </section>
+    <Pagination :units="icon_data" @iconsAddBatch="$emit('iconsAddBatch')" />
+    <IconDetail
+      v-if="selectedIcon"
+      :icon="selectedIcon"
+      @closeIconDetail="closeIconDetail"
+    />
+  </main>
 </template>
 
 <script>
-import Icon from '@/components/Icon.vue'
+import Icon from '@/components/Icon'
+import IconDetail from '@/components/IconDetail'
+import Pagination from '@/components/Pagination'
+import SearchBar from '@/components/SearchBar'
 export default {
   name: 'IconGrid',
-  components: { Icon },
-  props: ['icons'],
+  components: { Icon, IconDetail, Pagination, SearchBar },
+  props: ['icon_data'],
   data () {
     return {
+      selectedIcon: null
     }
   },
   methods: {
+    openIconDetail (icon) {
+      this.$emit('modalState', true)
+      this.selectedIcon = icon
+    },
+    closeIconDetail () {
+      this.$emit('modalState', false)
+      this.selectedIcon = null
+    },
+    doQuery (query) {
+      this.$emit('doQuery', query)
+    }
   }
 }
 </script>
