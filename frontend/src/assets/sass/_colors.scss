@@ -118,7 +118,7 @@ $palette-inverse: deep-map-merge($palette-normal, map-get($palettes, inverse));
 html:root {
   @include fill-css-palette($palette-normal);
 }
-html[theme='dark']:root * {
+html[theme='dark']:root, html[theme='dark']:root * {
   @include fill-css-palette($palette-inverse);
 }
 

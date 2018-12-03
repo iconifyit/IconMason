@@ -5,10 +5,8 @@ form.login {
   width: $login-width;
   background: $login-background-color;
   position: absolute;
-  width: $login-width;
   top: calc(50% - #{$login-height / 2 + $login-padding});
   left: calc(50% - #{$login-width / 2 + $login-padding});
-
   border-radius: $base-border-radius;
   header {
     padding: $login-padding;
@@ -18,8 +16,5 @@ form.login {
     h2 {
       color: $login-header-color
     }
-  }
-  main {
-
   }
 }
