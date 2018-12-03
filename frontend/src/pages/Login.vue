@@ -1,55 +1,59 @@
 // eslint-disable-next-line
 <template>
-  <form class="login" @submit.prevent="getAuthToken">
-    <header><h2>Log In</h2></header>
-    <ErrorAlert
-      :key="index"
-      v-for="(error, index) in errors.non_field_errors"
-    >
-      {{error}}
-    </ErrorAlert>
-    <main>
-      <div class="field" :class="{bad: errors.username}">
-        <label for="username">Username:</label>
-        <input
-          type="text"
-          id="username"
-          placeholder="Enter your username"
-          v-model="credentials.username"
-        >
-        <span
-          class="msg bad"
-          :key="index"
-          v-for="(error, index) in errors.username"
-        >
-          {{error}}
-        </span>
-      </div>
-      <div class="field" :class="{bad: errors.password}">
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter your password"
-          v-model="credentials.password"
-        >
-        <span
-          class="msg bad"
-          :key="index"
-          v-for="(error, index) in errors.password"
-        >
-          {{error}}
-        </span>
-      </div>
-      <input :disabled="loginDisabled" class="button" type="submit" value="Login" />
-    </main>
-  </form>
+  <section>
+    <form class="login" @submit.prevent="getAuthToken">
+      <header><h2>Log In</h2></header>
+      <ErrorAlert
+        v-if="errors.non_field_errors"
+        :key="index"
+        v-for="(error, index) in errors.non_field_errors"
+      >
+        {{error}}
+      </ErrorAlert>
+      <main>
+        <div class="field" :class="{bad: errors.username}">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            v-model="credentials.username"
+          >
+          <span
+            class="msg bad"
+            :key="index"
+            v-for="(error, index) in errors.username"
+          >
+            {{error}}
+          </span>
+        </div>
+        <div class="field" :class="{bad: errors.password}">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            v-model="credentials.password"
+          >
+          <span
+            class="msg bad"
+            :key="index"
+            v-for="(error, index) in errors.password"
+          >
+            {{error}}
+          </span>
+        </div>
+        <input :disabled="loginDisabled" class="button" type="submit" value="Login" />
+      </main>
+    </form>
+  </section>
 </template>
 
 <script>
 import ErrorAlert from '@/components/ErrorAlert'
 export default {
   name: 'Login',
+  props: ['auth'],
   data () {
     return {
       errors: {},
