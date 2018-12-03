@@ -7,7 +7,7 @@ import os
 import uuid
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
-from iconviewer.models.group import Group
+from backend.models.group import Group
 
 
 class IconSet(models.Model):

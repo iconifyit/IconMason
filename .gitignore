@@ -1,4 +1,4 @@
 venv/
 *.sqlite*
 *.pyc
-iconviewer/static/media/svg/
+backend/static/media/svg/

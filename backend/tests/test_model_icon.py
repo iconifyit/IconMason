@@ -1,11 +1,11 @@
 from django.test import TestCase
-from iconviewer.models import Icon, Tag, Group
+from backend.models import Icon, Tag, Group
 
 
 class IconTestCase(TestCase):
     """This class defines the test suite for the Icon model."""
 
-    fixtures = ['iconviewer/tests/fixtures/icon.json']
+    fixtures = ['backend/tests/fixtures/icon.json']
 
     def test_model_create(self):
         """Test creating an Icon."""

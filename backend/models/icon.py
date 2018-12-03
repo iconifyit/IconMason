@@ -3,9 +3,9 @@ import uuid
 import re
 from django.db import models
 from django.core.files.storage import FileSystemStorage
-from iconviewer.models.iconset import IconSet
-from iconviewer.models.tag import Tag
-from iconviewer.settings import MEDIA_ROOT
+from backend.models.iconset import IconSet
+from backend.models.tag import Tag
+from backend.settings import MEDIA_ROOT
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter

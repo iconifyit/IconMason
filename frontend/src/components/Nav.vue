@@ -2,7 +2,7 @@
 <template>
   <nav class="main">
     <div class="title">
-      <a href="/">IconViewer</a>
+      <a href="/">IconMason</a>
     </div>
     <a aria-expanded="false" class="vegan-burger sr-only" href="javascript:void(0);" role="button" tabindex="1">open the menu<span></span><span></span><span></span></a>
     <ul class="menu">

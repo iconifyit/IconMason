@@ -1,15 +1,15 @@
-"""Feed this command an IconJar file to import it into the iconviewer."""
+"""Feed this command an IconJar file to import it into IconMason."""
 import shutil
 import gzip
 import tempfile
 import json
 from pathlib import Path
 from contextlib import contextmanager
-from iconviewer.settings import MEDIA_ROOT
-from iconviewer.models.tag import Tag
-from iconviewer.models.group import Group
-from iconviewer.models.iconset import IconSet
-from iconviewer.models.icon import Icon
+from backend.settings import MEDIA_ROOT
+from backend.models.tag import Tag
+from backend.models.group import Group
+from backend.models.iconset import IconSet
+from backend.models.icon import Icon
 from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 
