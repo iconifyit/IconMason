@@ -4,10 +4,10 @@ from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework.serializers import FileField
 from rest_framework.serializers import ListField
 from rest_framework_recursive.fields import RecursiveField
-from backend.models.tag import Tag
-from backend.models.group import Group
-from backend.models.iconset import IconSet
-from backend.models.icon import Icon
+from iconmason.models.tag import Tag
+from iconmason.models.group import Group
+from iconmason.models.iconset import IconSet
+from iconmason.models.icon import Icon
 
 class TagSerializer(HyperlinkedModelSerializer):
     """Serializer to map the Tag model instance into JSON format."""

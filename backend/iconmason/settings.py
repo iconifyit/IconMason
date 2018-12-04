@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'backend.apps.IconMason'
+    'iconmason.apps.IconMason'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +77,7 @@ REST_FRAMEWORK = {
     )
 }
 
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'iconmason.urls'
 
 TEMPLATES = [
     {
@@ -103,12 +103,12 @@ STATICFILES_FINDERS = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "backend", "django-static")
+STATIC_ROOT = os.path.join(BASE_DIR, "iconmason", "django-static")
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
 STATIC_URL = "/django-static/"
 MEDIA_URL = STATIC_URL + "media/"
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+WSGI_APPLICATION = 'iconmason.wsgi.application'
 
 
 # Database

@@ -5,11 +5,11 @@ import tempfile
 import json
 from pathlib import Path
 from contextlib import contextmanager
-from backend.settings import MEDIA_ROOT
-from backend.models.tag import Tag
-from backend.models.group import Group
-from backend.models.iconset import IconSet
-from backend.models.icon import Icon
+from iconmason.settings import MEDIA_ROOT
+from iconmason.models.tag import Tag
+from iconmason.models.group import Group
+from iconmason.models.iconset import IconSet
+from iconmason.models.icon import Icon
 from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 

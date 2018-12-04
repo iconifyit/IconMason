@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('name', models.CharField(db_index=True, max_length=200, unique=True)),
                 ('sort', models.IntegerField(blank=True, null=True)),
-                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='backend.Group')),
+                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='iconmason.Group')),
             ],
         ),
         migrations.CreateModel(
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('name', models.CharField(db_index=True, max_length=200)),
-                ('file', models.ImageField(default='', max_length=200, storage=django.core.files.storage.FileSystemStorage(location='/Users/chris/projects/iconindex/backend/static/media'), upload_to='svg')),
+                ('file', models.ImageField(default='', max_length=200, storage=django.core.files.storage.FileSystemStorage(location='../frontend/dist/static/media'), upload_to='svg')),
             ],
         ),
         migrations.CreateModel(
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('name', models.CharField(db_index=True, max_length=200)),
-                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='iconsets', to='backend.Group')),
+                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='iconsets', to='iconmason.Group')),
             ],
         ),
         migrations.CreateModel(
@@ -49,11 +49,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='icon',
             name='icon_set',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='icons', to='backend.IconSet'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='icons', to='iconmason.IconSet'),
         ),
         migrations.AddField(
             model_name='icon',
             name='tags',
-            field=models.ManyToManyField(related_name='icons', related_query_name='icon', to='backend.Tag'),
+            field=models.ManyToManyField(related_name='icons', related_query_name='icon', to='iconmason.Tag'),
         ),
     ]
