@@ -14,8 +14,8 @@
 </template>
 <script>
 import responsiveNav from '@/utilities/navigation'
-import Nav from '@/components/nav'
-import Loading from '@/components/loading'
+import Nav from '@/components/Nav'
+import Loading from '@/components/Loading'
 export default {
   name: 'app',
   props: ['auth'],

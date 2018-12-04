@@ -103,9 +103,9 @@ STATICFILES_FINDERS = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "backend", "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "backend", "django-static")
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
-STATIC_URL = "/static/"
+STATIC_URL = "/django-static/"
 MEDIA_URL = STATIC_URL + "media/"
 
 WSGI_APPLICATION = 'backend.wsgi.application'
