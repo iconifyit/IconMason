@@ -1,5 +1,6 @@
 $nav-column-width: 17rem;
 body {
+  transition: all ease-in-out .5s;
   background: $body-background;
   .container > section {
     position: relative;
