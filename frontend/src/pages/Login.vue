@@ -82,7 +82,8 @@ export default {
           comp.$emit('login', response.data.token)
         })
         .catch(exc => {
-          comp.errors = exc.errors
+          // Only errors if it is not falsy, messes up the template if it is.
+          if (exc) comp.errors = exc.errors
         }).then(() => {
           comp.credentials = {
             username: '',
