@@ -43,6 +43,7 @@ export default {
     doLogout () {
       this.auth.authenticated = false
       this.auth.authToken = null
+      sessionStorage.removeItem('authToken')
       this.$router.push({name: 'Login'})
     },
     doLoading (state) {

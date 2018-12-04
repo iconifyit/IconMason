@@ -45,7 +45,9 @@ class Icon(models.Model):
 
     @property
     def svg_data(self):
-        return self.file.read()
+        data = self.file.read()
+        self.file.close()
+        return data
 
     @property
     def svg_source(self):

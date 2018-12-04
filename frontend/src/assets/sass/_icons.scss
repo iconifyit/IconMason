@@ -7,6 +7,9 @@ html[theme="dark"] {
     *:not([fill="none"]):not([class]) {
       fill: #fff;
     }
+    *:not([stroke="none"]):not([class])[stroke] {
+      stroke: #fff;
+    }
   }
 }
 
