@@ -14,18 +14,23 @@ To install dependencies:
 
 ``` bash
 git clone git@github.com/SnijderC/IconMason.git
-cd IconMason/
+cd IconMason/backend
+# Make a virtual environment
+python3 -m venv venv
+# Activate the virtual environment
+source ./venv/bin/activate
+# Install dependencies in the virtual environment
 pip install -r requirements.txt
 ```
 
 From here follow Django deployment instructions.
 
-If you want to hack on this project you can run the development server which
-is __not__ suitable for production:
-
-``` bash
-./manage.py runserver 8080
-```
+__NOTE:__ At the very least run the server from a uwsgi server and install a
+proxy to serve it. Also __don't forget to replace the `SECRET_KEY` in the
+`settings.py` file and you will need to change the list in `ALLOWED_HOSTS` to
+include your domain name, also put your domain name in the
+[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) white list:
+`CORS_ORIGIN_WHITELIST`__
 
 ## Running the front-end
 
@@ -50,13 +55,13 @@ will give you a `404` error page. There is only an AIP, if you want so "see"
 the API, there is a GUI at: `[yourhostname]:[port]/api` that is browsable and
 that has a schema generator.
 
-
 ## Adding users
 
 You will first need to add an admin account, following the usual procedure to
 create Django super users.
 
 ```bash
+cd backend
 ./manage.py createsuperuser
 ```
 
@@ -86,3 +91,28 @@ get you started.
 
 It may take a while for bigger sets to import. This might be improved in the
 future.
+
+## Developing on the project
+
+If you want to hack on this project you need to run a backend and a frontend.
+The backend exposes a REST API that the frontend consumes.
+
+### Backend
+
+You can run the Django development server which is __not__ suitable for production:
+
+``` bash
+cd backend
+./manage.py runserver 8080
+```
+
+### Frontend
+
+You can run the webpack development server which is __not__ suitable for production. You will need NodeJS to be installed and the webpack (version 4+) CLI (`npm install -g webpack-cli`).
+
+``` bash
+cd frontend/
+npm install
+# OR use yarn and make your life easier: `yarn install`
+npm run dev
+```
