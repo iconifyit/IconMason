@@ -101,13 +101,18 @@ STATICFILES_FINDERS = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
-STATIC_ROOT = os.path.join(BASE_DIR, "iconmason", "static", "iconmason")
-MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
+MEDIA_ROOT = os.path.join(
+    os.path.dirname(os.path.dirname(BASE_DIR)), "iconmason-media/"
+)
+
+STATICFILES_DIRS = (MEDIA_ROOT,)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = STATIC_URL + "iconmason/media/"
+MEDIA_URL = "/media/"
 
 WSGI_APPLICATION = 'iconmason.wsgi.application'
 
