@@ -14,10 +14,10 @@ from api.serializers import IconSetSerializer
 from api.serializers import TagSerializer
 from api.serializers import TagDetailSerializer
 from api.serializers import GroupSerializer
-from backend.models.tag import Tag
-from backend.models.group import Group
-from backend.models.iconset import IconSet
-from backend.models.icon import Icon
+from iconmason.models.tag import Tag
+from iconmason.models.group import Group
+from iconmason.models.iconset import IconSet
+from iconmason.models.icon import Icon
 
 
 def get_uuid_params(request, *params):

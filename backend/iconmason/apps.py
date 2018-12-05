@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 class IconMason(AppConfig):
-    name = 'backend'
+    name = 'iconmason'
     verbose_name = "IconMason Backend"
     def ready(self):
-        import backend.signals
+        import iconmason.signals

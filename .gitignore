@@ -1,4 +1,4 @@
 venv/
 *.sqlite*
 *.pyc
-backend/static/media/svg/
+backend/iconmason/django-static/media/svg/

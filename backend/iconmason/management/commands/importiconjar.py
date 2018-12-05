@@ -5,11 +5,11 @@ import tempfile
 import json
 from pathlib import Path
 from contextlib import contextmanager
-from backend.settings import MEDIA_ROOT
-from backend.models.tag import Tag
-from backend.models.group import Group
-from backend.models.iconset import IconSet
-from backend.models.icon import Icon
+from iconmason.settings import MEDIA_ROOT
+from iconmason.models.tag import Tag
+from iconmason.models.group import Group
+from iconmason.models.iconset import IconSet
+from iconmason.models.icon import Icon
 from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 
@@ -139,7 +139,7 @@ class IconJarImporter:
                 # to be done, i.e. this is a new record.
                 icon_obj.file.save(
                     icon['file'],
-                    open(icons_path / icon['file'], 'r', encoding='utf-8')
+                    open(str(icons_path / icon['file']), 'r', encoding='utf-8')
                 )
             else:
                 self.log("Icon: {} exists.", icon_obj.name)
@@ -247,7 +247,7 @@ class IconJarImporter:
             # There should be a dir with icons in the same directory as the
             # META file.
             meta_file = jar / "META"
-            icons_path = meta_file.parent / "icons"
+            icons_path = jar / "icons"
             if not icons_path.is_dir():
                 raise IOError(
                     "Can't find an icons directory under {}".format(path)
@@ -256,8 +256,8 @@ class IconJarImporter:
                 raise IOError(
                     "Can't find a META file under {}".format(path)
                 )
-            with gzip.open(meta_file, mode='rb') as meta_file_handle:
-                metadata = json.load(meta_file_handle)
+            with gzip.open(str(meta_file), mode='rt', encoding='utf-8') as mfh:
+                metadata = json.load(mfh)
             jars.append((icons_path, metadata))
         return jars
 

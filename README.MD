@@ -3,6 +3,13 @@
 Import IconJar files into a Django database and use consume them from a rest
 API or use the bundled Vue frontend.
 
+## Limitations
+
+This project only does SVG files, if you need bitmap images, feel free to do a
+PR for that. Also fields like: license, date, etc. are not imported. At this
+point the interface is read-only. Mainly this project allows you to use the
+groups, sets, tags and names to search icons quickly.
+
 ## Running the back-end
 
 The backend is a standard Django application, you will need to install

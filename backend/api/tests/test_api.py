@@ -3,13 +3,13 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
-from backend.models import Icon
+from iconmason.models import Icon
 
 
 class APITestCase(TestCase):
     """Test suite for the api views."""
 
-    fixtures = ['backend/tests/fixtures/icon.json']
+    fixtures = ['iconmason/tests/fixtures/icon.json']
 
     def setUp(self):
         """Define the test client and other test variables."""

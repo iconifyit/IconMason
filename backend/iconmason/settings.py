@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'backend.apps.IconMason'
+    'iconmason.apps.IconMason'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +77,7 @@ REST_FRAMEWORK = {
     )
 }
 
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'iconmason.urls'
 
 TEMPLATES = [
     {
@@ -103,12 +103,12 @@ STATICFILES_FINDERS = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "backend", "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "iconmason", "django-static")
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
-STATIC_URL = "/static/"
+STATIC_URL = "/django-static/"
 MEDIA_URL = STATIC_URL + "media/"
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+WSGI_APPLICATION = 'iconmason.wsgi.application'
 
 
 # Database
@@ -158,4 +158,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/django-static/'
