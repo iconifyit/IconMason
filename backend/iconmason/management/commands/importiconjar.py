@@ -12,6 +12,7 @@ from iconmason.models.iconset import IconSet
 from iconmason.models.icon import Icon
 from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
+from django.core.exceptions import ValidationError
 
 
 class LogLevels():
@@ -20,6 +21,7 @@ class LogLevels():
     ERROR = 0
     SUCCESS = 1
     INFO = 2
+    DEBUG = 3
 
 
 class Command(BaseCommand):
@@ -42,7 +44,7 @@ class Command(BaseCommand):
         @param str logstr String to send to stdout/stderr.
         @param LOGLEVEL level
         """
-        if self.verbosity > level:
+        if self.verbosity >= level:
 
             logstr = str(logstr).format(*args, **kwargs)
 
@@ -108,14 +110,19 @@ class IconJarImporter:
             if jars:
                 self.log(
                     "Importing these iconjars: \n- {}",
-                    "\n- ".join([str(str_path) for p in jars])
+                    "\n - ".join([str(Path(p[0]).parent.name) for p in jars])
                 )
             else:
                 self.error("No IconJars found with {}", str(path))
 
             for icons_path, metadata in jars:
+                shortname = Path(icons_path).parent.name
+                self.log("Importing {}..", shortname)
+                self.log(">> Importing groups of {}..", shortname)
                 self.import_groups(metadata['groups'])
+                self.log(">> Importing icon sets of {}..", shortname)
                 self.import_sets(metadata['sets'])
+                self.log(">> Importing icons of {}..", shortname)
                 for icon in metadata['items'].values():
                     self.import_icon(icon, icons_path)
 
@@ -134,27 +141,33 @@ class IconJarImporter:
                 icon_set=self.sets.get(icon['parent'], None)
             )
             if created:
-                self.log("Created icon: {}", icon_obj.name)
+                self.debug(">>>> Created icon: {}", icon_obj.name)
                 # Relatively costly operations are done after we know it needs
                 # to be done, i.e. this is a new record.
                 icon_obj.file.save(
                     icon['file'],
-                    open(str(icons_path / icon['file']), 'r', encoding='utf-8')
+                    open(str(icons_path / icon['file']), 'rb')
                 )
             else:
-                self.log("Icon: {} exists.", icon_obj.name)
+                self.debug(">>>> Icon: {} exists.", icon_obj.name)
             if set(icon_obj.tags.all()) != set(tags):
-                self.log("Setting Tags on {}.", icon_obj.name, tags)
+                self.debug(">>>> Setting Tags on {}.", icon_obj.name, tags)
                 icon_obj.tags.add(*tags)
             else:
-                self.log(
-                    "Tags {} already set on {}.",
+                self.debug(
+                    ">>>> Tags {} already set on {}.",
                     icon_obj.name,
                     ", ".join([t.name for t in tags])
                 )
             icon_obj.save()
         except (FileNotFoundError, OSError) as exc:
             self.error(exc)
+        except ValidationError as exc:
+            if "is not a valid UUID" in str(exc):
+                self.error(
+                    "Icon \"{}\" has an invalid UUID, skipping it.",
+                    icon['name']
+                )
 
     def import_groups(self, groups):
         """
@@ -182,17 +195,26 @@ class IconJarImporter:
         """
         # First add all sets without hierarchy.
         for unit in data.values():
-            unit_obj, created = unit_model.objects.get_or_create(
-                name=unit['name'],
-                uuid=unit['identifier'],
-            )
-            unit_store[unit['identifier']] = unit_obj
-            if created:
-                self.log(
-                    "Created {}: {} ({})", unit_model._meta.model_name,
-                    unit_obj.name,
-                    unit_obj.uuid
+            try:
+                unit_obj, created = unit_model.objects.get_or_create(
+                    name=unit['name'],
+                    uuid=unit['identifier'],
                 )
+                unit_store[unit['identifier']] = unit_obj
+                if created:
+                    self.debug(
+                        ">>>> Created {}: {} ({})", unit_model._meta.model_name,
+                        unit_obj.name,
+                        unit_obj.uuid
+                    )
+            except ValidationError as exc:
+                # if there is a UUID error, skip the item.
+                if "is not a valid UUID" in str(exc):
+                    self.error(
+                        "{} \"{}\" has an invalid UUID, skipping it.",
+                        unit_model._meta.model_name,
+                        unit['name']
+                    )
 
         # Now that all sets exist we can easily add their parents
         for unit in data.values():
@@ -212,7 +234,7 @@ class IconJarImporter:
                     unit['identifier'],
                     parent
                 )
-                raise exc
+                # raise exc
 
     def import_icon_tags(self, tags):
         """
@@ -226,7 +248,7 @@ class IconJarImporter:
             if tag not in self.tags.keys():
                 tag_obj, created = Tag.objects.get_or_create(name=tag)
                 if created:
-                    self.log("Created tag {}", tag)
+                    self.debug(">>>> Created tag {}", tag)
                 self.tags[tag] = tag_obj
             icon_tags.append(self.tags[tag])
         return icon_tags
@@ -256,8 +278,8 @@ class IconJarImporter:
                 raise IOError(
                     "Can't find a META file under {}".format(path)
                 )
-            with gzip.open(str(meta_file), mode='rt', encoding='utf-8') as mfh:
-                metadata = json.load(mfh)
+            with gzip.open(str(meta_file), mode='rb') as mfh:
+                metadata = json.loads(mfh.read().decode('utf-8'))
             jars.append((icons_path, metadata))
         return jars
 
@@ -306,6 +328,14 @@ class IconJarImporter:
         @param str logstr String to log through Django.
         """
         self.log_func(logstr, *args, **kwargs)
+
+    def debug(self, logstr, *args, **kwargs):
+        """
+        Send a log message of level DEBUG through Django.
+
+        @param str logstr String to log through Django.
+        """
+        self.log_func(logstr, *args, level=LogLevels.DEBUG, **kwargs)
 
     def error(self, logstr, *args, **kwargs):
         """

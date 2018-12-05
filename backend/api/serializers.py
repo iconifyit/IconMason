@@ -42,7 +42,8 @@ class IconSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Icon
-        fields = ('uuid', 'name', 'file', 'tags', 'url', 'svg_data')
+        fields = (
+            'uuid', 'name', 'file', 'tags', 'url', 'svg_data', 'filetype')
         read_only_fields = ('uuid', 'svg_data')
 
 
@@ -73,5 +74,14 @@ class IconDetailSerializer(HyperlinkedModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Icon
-        fields = ('uuid', 'name', 'file', 'svg_source', 'tags', 'icon_set')
+        fields = (
+            'uuid',
+            'name',
+            'file',
+            'svg_source',
+            'tags',
+            'icon_set',
+            'filetype',
+            'filename'
+        )
         read_only_fields = ('uuid', 'svg_source')

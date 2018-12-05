@@ -24,7 +24,9 @@ def get_uuid_params(request, *params):
     ret_params = {}
     for param in params:
         value = request.query_params.get(param)
-        if value:
+        if value == "null":
+            ret_params[param] = None
+        elif value:
             ret_params[param] = uuid.UUID(hex=value)
     return ret_params
 
@@ -123,6 +125,10 @@ class IconSetViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = IconSet.objects.all().order_by("name")
 
         if 'group' in params:
-            queryset = queryset.filter(group__uuid__exact=params['group'].urn)
+            group = params['group']
+            if group:
+                queryset = queryset.filter(group__uuid__exact=group.urn)
+            else:
+                queryset = queryset.filter(group__is_null=True)
 
         return queryset

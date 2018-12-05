@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -102,14 +101,15 @@ STATICFILES_FINDERS = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
-
-STATIC_ROOT = os.path.join(BASE_DIR, "iconmason", "django-static")
+STATIC_ROOT = os.path.join(BASE_DIR, "iconmason", "static", "iconmason")
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
-STATIC_URL = "/django-static/"
-MEDIA_URL = STATIC_URL + "media/"
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
+
+STATIC_URL = '/static/'
+MEDIA_URL = STATIC_URL + "iconmason/media/"
 
 WSGI_APPLICATION = 'iconmason.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -155,7 +155,4 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/django-static/'

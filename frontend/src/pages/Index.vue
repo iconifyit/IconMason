@@ -73,6 +73,7 @@ export default {
       loading: false,
       currentGroupPath: [],
       currentSet: null,
+      currentGroup: null,
       errors: {},
       modalActive: false,
       expandedNav: false,
@@ -85,7 +86,6 @@ export default {
   },
   methods: {
     setGroupEventHandler (paths) {
-      let currentGroup = null
       let indexLastPath = -1
       if (this.currentGroupPath) {
         let lastPath = paths[paths.length-1]
@@ -93,31 +93,16 @@ export default {
       }
       if (indexLastPath > -1) {
         this.currentGroupPath = this.currentGroupPath.slice(0, indexLastPath)
-        currentGroup = this.currentGroupPath[this.currentGroupPath.length - 1]
+        this.currentGroup = this.currentGroupPath[this.currentGroupPath.length - 1]
       } else {
         this.currentGroupPath = paths
-        currentGroup = paths[paths.length - 1]
+        this.currentGroup = paths[paths.length - 1]
       }
       this.currentSet = null
       this.queryParams.page = 1
-      this.queryParams.node = currentGroup ? currentGroup.uuid : null
+      this.queryParams.node = this.currentGroup ? this.currentGroup.uuid : null
+      this.getSetsForQuery()
       this.getIconsForQuery()
-      if (!currentGroup || currentGroup.iconsets.length === 0) return
-      let comp = this
-      let client = this.$root.client
-      this.$emit('doLoading', true)
-      client.get('/iconsets/', {params: {group: currentGroup.uuid}})
-        .then(
-          function (response) {
-            comp.sets = response.data.results
-          }
-        )
-        .catch(function (response) {
-          comp.errors.push(response.data)
-        })
-        .then(function () {
-          comp.$emit('doLoading', false)
-        })
     },
     setSetEventHandler (set) {
       if (this.currentSet == set) {
@@ -147,6 +132,26 @@ export default {
               comp.icon_data = response.data
             }
         })
+        .catch(function (response) {
+          comp.errors.push(response.data)
+        })
+        .then(function () {
+          comp.$emit('doLoading', false)
+        })
+    },
+    getSetsForQuery() {
+      let comp = this
+      let client = this.$root.client
+      this.$emit('doLoading', true)
+      let params = {
+        group: this.currentGroup ? this.currentGroup.uuid : null
+      }
+      client.get('/iconsets/', {params})
+        .then(
+          function (response) {
+            comp.sets = response.data.results
+          }
+        )
         .catch(function (response) {
           comp.errors.push(response.data)
         })
@@ -185,6 +190,8 @@ export default {
       .then(function () {
         comp.$emit('doLoading', false)
       })
+    this.getSetsForQuery()
+    this.getIconsForQuery()
   }
 }
 </script>

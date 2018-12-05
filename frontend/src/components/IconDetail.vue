@@ -19,19 +19,45 @@
               <tr><th colspan="2">Icon Details</th></tr>
             </thead>
             <tbody>
-              <tr><td>Icon set:</td><td>{{details.icon_set.name}}</td></tr>
-              <tr><td>Icon group:</td><td>{{details.icon_set.group.name}}</td></tr>
+              <tr>
+                <td>Icon set:</td><td>{{details.icon_set.name}}</td>
+              </tr>
+              <tr v-if="details.icon_set.group">
+                <td>Icon group:</td><td>{{details.icon_set.group.name}}</td>
+              </tr>
+              <tr>
+                <td>File type:</td><td>{{details.filetype}}</td>
+              </tr>
             </tbody>
           </table>
-          <p class="code-title">SVG Source</p>
-          <div class="source" v-html="details.svg_source"></div>
+          <p v-if="details.svg_source" class="code-title">SVG Source</p>
+          <div
+            v-if="details.svg_source"
+            class="source"
+            v-html="details.svg_source"
+          ></div>
           <div class="actions">
-            <button class="button good" @click="downloadSvg(icon.name+'.svg', icon.svg_data)">
+            <button
+              v-if="details.svg_source"
+              class="button good"
+              @click="downloadSvg(icon.name+'.svg', icon.svg_data)"
+            >
               Download
             </button>
+            <a
+              v-if="!details.svg_source"
+              class="button good"
+              :href="icon.file"
+              :download="details.filename"
+            >
+              Download
+            </a>
           </div>
         </article>
-        <figure v-html="icon.svg_data"></figure>
+        <figure v-if="icon.svg_data" v-html="icon.svg_data"></figure>
+        <figure v-if="!icon.svg_data">
+          <img :src="icon.file" />
+        </figure>
       </main>
       <footer>
         <Tag v-for="(tag, index) in icon.tags" :tag="tag" :key="index" />
