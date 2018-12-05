@@ -4,13 +4,13 @@
     <section class="grid">
       <SearchBar @doQuery="doQuery" />
       <Icon
-        v-for="(icon, index) in icon_data.results"
+        v-for="(icon, index) in iconData.results"
         :icon="icon"
         :key="index"
         @openIconDetail="openIconDetail"
       />
     </section>
-    <Pagination :units="icon_data" @iconsAddBatch="$emit('iconsAddBatch')" />
+    <Pagination :units="iconData" @iconsAddBatch="$emit('iconsAddBatch')" />
     <IconDetail
       v-if="selectedIcon"
       :icon="selectedIcon"
@@ -27,7 +27,7 @@ import SearchBar from '@/components/SearchBar'
 export default {
   name: 'IconGrid',
   components: { Icon, IconDetail, Pagination, SearchBar },
-  props: ['icon_data'],
+  props: ['iconData'],
   data () {
     return {
       selectedIcon: null

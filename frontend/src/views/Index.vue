@@ -45,7 +45,7 @@
       @modalState="modalState"
       @iconsAddBatch="iconsAddBatch"
       @doQuery="doQuery"
-      :icon_data="icon_data"
+      :iconData="iconData"
     />
   </section>
 </template>
@@ -69,7 +69,7 @@ export default {
   data () {
     return {
       groups: [],
-      icon_data: [],
+      iconData: [],
       sets: [],
       loading: false,
       currentGroupPath: [],
@@ -106,7 +106,7 @@ export default {
       this.getIconsForQuery()
     },
     setSetEventHandler (set) {
-      if (this.currentSet == set) {
+      if (this.currentSet === set) {
         this.currentSet = null
         this.queryParams.node = null
       } else {
@@ -124,13 +124,13 @@ export default {
       client.get('/icons/', { params })
         .then((response) => {
           if (add) {
-            const icon_data = comp.icon_data
-            icon_data.next = response.data.next
-            icon_data.previous = response.data.previous
-            icon_data.results.push(...response.data.results)
-            comp.icon_data = icon_data
+            const iconData = comp.iconData
+            iconData.next = response.data.next
+            iconData.previous = response.data.previous
+            iconData.results.push(...response.data.results)
+            comp.iconData = iconData
           } else {
-            comp.icon_data = response.data
+            comp.iconData = response.data
           }
         })
         .catch((response) => {

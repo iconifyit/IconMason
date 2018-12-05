@@ -4,7 +4,6 @@
     <form class="login" @submit.prevent="getAuthToken">
       <header><h2>Log In</h2></header>
       <ErrorAlert
-        v-if="errors.non_field_errors"
         :key="index"
         v-for="(error, index) in errors.non_field_errors"
       >
@@ -22,7 +21,7 @@
           <span
             class="msg bad"
             :key="index"
-            v-for="(error, index) in errors.username"
+            v-for="(error, index) in errors.username || {} "
           >
             {{error}}
           </span>
@@ -92,7 +91,7 @@ export default {
             password: ''
           }
           comp.$emit('doLoading', false)
-          this.lologinDisabled = false
+          this.loginDisabled = false
         })
     }
   }

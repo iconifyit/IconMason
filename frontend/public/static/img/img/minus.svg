@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    svg > use {display:none;}
+    svg > use:target {display:inline;}
+    #dark {fill: #fff;}
+    #light {fill: #06c;}
+  </style>
+  <symbol id="min">
+    <path d="M19 13H5v-2h14v2z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+  </symbol>
+<use href="#min" id="light" />
+<use href="#min" id="dark" />
+</svg>

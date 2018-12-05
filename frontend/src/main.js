@@ -15,7 +15,7 @@ let auth = {
   authToken: token || null
 }
 let clientOpts = {
-  baseURL: process.env.API_URL,
+  baseURL: 'http://localhost:9000/api/',
   timeout: 5000
 }
 if (token) {
