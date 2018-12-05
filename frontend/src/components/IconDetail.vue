@@ -68,57 +68,57 @@
 </template>
 
 <script>
-  import Tag from '@/components/Tag'
-  import Loading from '@/components/Loading'
-  import ErrorAlert from '@/components/ErrorAlert'
-  import downloadSvg from '@/utilities/download-svg'
-  export default {
-    name: 'IconDetail',
-    props: ['icon'],
-    components: { Tag, Loading , ErrorAlert},
-    data() {
-      return {
-        loading: false,
-        details: null,
-        errors: {}
+import Tag from '@/components/Tag'
+import Loading from '@/components/Loading'
+import ErrorAlert from '@/components/ErrorAlert'
+import downloadSvg from '@/utilities/download-svg'
+export default {
+  name: 'IconDetail',
+  props: ['icon'],
+  components: { Tag, Loading, ErrorAlert },
+  data () {
+    return {
+      loading: false,
+      details: null,
+      errors: {}
+    }
+  },
+  methods: {
+    closeIconDetail (event) {
+      if (event && event.type === 'click' &&
+            !event.target.classList.contains('close') &&
+            !event.target.querySelector('.modal')) {
+        return
+      }
+      this.$emit('closeIconDetail')
+    },
+    handleKeyUp (event) {
+      if (event.keyCode === 27) {
+        this.closeIconDetail()
       }
     },
-    methods: {
-      closeIconDetail (event) {
-        if (event && event.type === "click" &&
-            !event.target.classList.contains("close") &&
-            !event.target.querySelector('.modal')) {
-          return
-        }
-        this.$emit('closeIconDetail')
-      },
-      handleKeyUp(event) {
-        if (event.keyCode === 27) {
-          this.closeIconDetail()
-        }
-      },
-      downloadSvg
-    },
-    mounted: function() {
-      let comp = this
-      let client = this.$root.client
-      this.loading = true
-      client.get('/icons/'+this.icon.uuid+'/')
-        .then(function (response) {
-          comp.details = response.data
-        })
-        .catch(function (response) {
-          comp.errors.push(response.data)
-        })
-        .then(function () {
-          comp.loading = false
-        })
-    },
-    created: function() {
-      document.addEventListener('keyup', this.handleKeyUp);
-    },
-    destroyed: function() {
-      document.removeEventListener('keyup', this.handleKeyUp);
-    }
+    downloadSvg
+  },
+  mounted: function () {
+    let comp = this
+    let client = this.$root.client
+    this.loading = true
+    client.get('/icons/' + this.icon.uuid + '/')
+      .then(function (response) {
+        comp.details = response.data
+      })
+      .catch(function (response) {
+        comp.errors.push(response.data)
+      })
+      .then(function () {
+        comp.loading = false
+      })
+  },
+  created: function () {
+    document.addEventListener('keyup', this.handleKeyUp)
+  },
+  destroyed: function () {
+    document.removeEventListener('keyup', this.handleKeyUp)
   }
+}
 </script>

@@ -34,7 +34,7 @@ client.interceptors.response.use(
       if (error.response.status === 401) {
         auth.authenticated = false
         auth.authToken = null
-        router.push({name: 'Login'})
+        router.push({ name: 'Login' })
       }
       error = new Error('Response error')
       error.errors = exc.response.data
@@ -44,15 +44,15 @@ client.interceptors.response.use(
       let req = exc.request
       let status = req.status ? `${req.status}:` : ''
       error = new Error('Request error')
-      error.errors = {'non_field_errors': [
+      error.errors = { 'non_field_errors': [
         `${status} ${req.statusText || req.responseText || exc.message}`
-      ]}
+      ] }
     } else if (typeof exc.message !== 'undefined') {
       error = new Error('Request error')
-      error.errors = {'non_field_errors': [exc.message]}
+      error.errors = { 'non_field_errors': [exc.message] }
     } else {
       error = new Error('Unknown error')
-      error.errors = {'non_field_errors': [exc]}
+      error.errors = { 'non_field_errors': [exc] }
     }
     return Promise.reject(error)
   }

@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from './pages/Index'
-import Login from './pages/Login'
+import Index from './views/Index'
+import Login from './views/Login'
 
 Vue.use(Router)
 
-let router = new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {

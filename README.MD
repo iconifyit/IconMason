@@ -115,11 +115,22 @@ cd backend
 
 ### Frontend
 
-You can run the webpack development server which is __not__ suitable for production. You will need NodeJS to be installed and the webpack (version 4+) CLI (`npm install -g webpack-cli`).
+#### Project setup
+```
+yarn install
+```
 
-``` bash
-cd frontend/
-npm install
-# OR use yarn and make your life easier: `yarn install`
-npm run dev
+#### Compiles and hot-reloads for development
+```
+yarn run serve
+```
+
+#### Compiles and minifies for production
+```
+yarn run build
+```
+
+#### Lints and fixes files
+```
+yarn run lint
 ```

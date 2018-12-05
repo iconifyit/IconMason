@@ -4,8 +4,8 @@
 </template>
 
 <script>
-  export default {
-    name: 'Tag',
-    props: ['tag'],
-  }
+export default {
+  name: 'Tag',
+  props: ['tag']
+}
 </script>

@@ -1,4 +1,21 @@
+node_modules/
 venv/
 *.sqlite*
 *.pyc
 backend/iconmason/static/iconmason/media/icons/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*

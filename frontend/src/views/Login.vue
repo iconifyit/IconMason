@@ -51,6 +51,7 @@
 
 <script>
 import ErrorAlert from '@/components/ErrorAlert'
+
 export default {
   name: 'Login',
   props: ['auth'],
@@ -69,19 +70,20 @@ export default {
   },
   methods: {
     getAuthToken (username, password) {
-      let comp = this
-      let client = this.$root.client
+      const comp = this
+      const client = this.$root.client
       this.$emit('doLoading', true)
       this.lologinDisabled = true
       client.post(
         '/auth/', {
           username: this.credentials.username,
           password: this.credentials.password
-        })
-        .then(response => {
+        }
+      )
+        .then((response) => {
           comp.$emit('login', response.data.token)
         })
-        .catch(exc => {
+        .catch((exc) => {
           // Only errors if it is not falsy, messes up the template if it is.
           if (exc) comp.errors = exc.errors
         }).then(() => {

@@ -42,12 +42,11 @@ export default {
     }
   },
   mounted () {
-    if (this.group.groups.length === 0)
-      return
+    if (this.group.groups.length === 0) { return }
     let comp = this
     let client = this.$root.client
     this.$emit('doLoading', true)
-    client.get('/groups/', {params: {group: this.group.uuid}})
+    client.get('/groups/', { params: { group: this.group.uuid } })
       .then(
         function (response) {
           comp.groups = response.data.results

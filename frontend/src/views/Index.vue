@@ -56,6 +56,7 @@ import SetItem from '@/components/SetItem'
 import ErrorAlert from '@/components/ErrorAlert'
 import IconGrid from '@/components/IconGrid'
 import pickBy from 'lodash/pickBy'
+
 export default {
   name: 'Index',
   components: {
@@ -88,7 +89,7 @@ export default {
     setGroupEventHandler (paths) {
       let indexLastPath = -1
       if (this.currentGroupPath) {
-        let lastPath = paths[paths.length-1]
+        const lastPath = paths[paths.length - 1]
         indexLastPath = this.currentGroupPath.indexOf(lastPath)
       }
       if (indexLastPath > -1) {
@@ -116,46 +117,46 @@ export default {
       this.getIconsForQuery()
     },
     getIconsForQuery (add) {
-      let comp = this
-      let client = this.$root.client
+      const comp = this
+      const client = this.$root.client
       this.$emit('doLoading', true)
-      let params = pickBy(this.queryParams, v=>v)
-      client.get('/icons/', {params})
-        .then(function (response) {
-            if (add) {
-              let icon_data = comp.icon_data
-              icon_data.next = response.data.next
-              icon_data.previous = response.data.previous
-              icon_data.results.push(...response.data.results)
-              comp.icon_data = icon_data
-            } else {
-              comp.icon_data = response.data
-            }
+      const params = pickBy(this.queryParams, v => v)
+      client.get('/icons/', { params })
+        .then((response) => {
+          if (add) {
+            const icon_data = comp.icon_data
+            icon_data.next = response.data.next
+            icon_data.previous = response.data.previous
+            icon_data.results.push(...response.data.results)
+            comp.icon_data = icon_data
+          } else {
+            comp.icon_data = response.data
+          }
         })
-        .catch(function (response) {
+        .catch((response) => {
           comp.errors.push(response.data)
         })
-        .then(function () {
+        .then(() => {
           comp.$emit('doLoading', false)
         })
     },
-    getSetsForQuery() {
-      let comp = this
-      let client = this.$root.client
+    getSetsForQuery () {
+      const comp = this
+      const client = this.$root.client
       this.$emit('doLoading', true)
-      let params = {
+      const params = {
         group: this.currentGroup ? this.currentGroup.uuid : null
       }
-      client.get('/iconsets/', {params})
+      client.get('/iconsets/', { params })
         .then(
-          function (response) {
+          (response) => {
             comp.sets = response.data.results
           }
         )
-        .catch(function (response) {
+        .catch((response) => {
           comp.errors.push(response.data)
         })
-        .then(function () {
+        .then(() => {
           comp.$emit('doLoading', false)
         })
     },
@@ -175,19 +176,19 @@ export default {
     }
   },
   mounted () {
-    let comp = this
-    let client = this.$root.client
+    const comp = this
+    const client = this.$root.client
     this.$emit('doLoading', true)
     client.get('/groups/')
       .then(
-        function (response) {
+        (response) => {
           comp.groups = response.data.results
         }
       )
-      .catch(function (response) {
+      .catch((response) => {
         comp.errors.push(response.data)
       })
-      .then(function () {
+      .then(() => {
         comp.$emit('doLoading', false)
       })
     this.getSetsForQuery()

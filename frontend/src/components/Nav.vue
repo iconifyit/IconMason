@@ -39,7 +39,7 @@ import ViewControl from '@/utilities/view-control'
 export default {
   name: 'Nav',
   props: ['auth'],
-  data: function() {
+  data: function () {
     return {
       disableZoomIn: false,
       disableZoomOut: false,
@@ -74,9 +74,9 @@ export default {
   },
   beforeMount () {
     this.viewControl = new ViewControl({
-        zoomMin: 10,
-        zoomMax: 22,
-        useLocalStorage: true
+      zoomMin: 10,
+      zoomMax: 22,
+      useLocalStorage: true
     })
     this.themeLink = this.viewControl.theme === 'dark' ? 'light' : 'dark'
   }

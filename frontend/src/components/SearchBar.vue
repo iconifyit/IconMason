@@ -16,39 +16,39 @@
 </template>
 
 <script>
-  import debounce from 'lodash/debounce'
-  export default {
-    name: 'SearchBar',
-    data () {
-      return {
-        cancel: null,
-        flush: null
+import debounce from 'lodash/debounce'
+export default {
+  name: 'SearchBar',
+  data () {
+    return {
+      cancel: null,
+      flush: null
+    }
+  },
+  methods: {
+    doQuery (event) {
+      let vm = this
+      let query = event.target.value
+      this.cancelQuery()
+      let debouncedQuery = debounce(() => {
+        vm.$emit('doQuery', query)
+      }, 1000)
+      this.cancel = debouncedQuery.cancel
+      this.flush = debouncedQuery.flush
+      debouncedQuery()
+    },
+    cancelQuery () {
+      if (this.cancel) {
+        this.cancel()
+        console.log('cancel!')
       }
     },
-    methods: {
-      doQuery (event) {
-        let vm = this
-        let query = event.target.value
-        this.cancelQuery()
-        let debouncedQuery = debounce(() => {
-          vm.$emit("doQuery", query)
-        }, 1000)
-        this.cancel = debouncedQuery.cancel
-        this.flush = debouncedQuery.flush
-        debouncedQuery()
-      },
-      cancelQuery () {
-        if (this.cancel) {
-          this.cancel()
-          console.log("cancel!")
-        }
-      },
-      flushQuery () {
-        if (this.flush) {
-          this.flush()
-          console.log("flush!")
-        }
+    flushQuery () {
+      if (this.flush) {
+        this.flush()
+        console.log('flush!')
       }
     }
   }
+}
 </script>
