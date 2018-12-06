@@ -4,6 +4,7 @@
     <form class="login" @submit.prevent="getAuthToken">
       <header><h2>Log In</h2></header>
       <ErrorAlert
+        v-if="errors.length"
         :key="index"
         v-for="(error, index) in errors.non_field_errors || [errors.detail]"
       >

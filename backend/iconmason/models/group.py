@@ -33,6 +33,12 @@ class Group(models.Model):
         null=True
     )
 
+    def decendents(self):
+        decendents = []
+        for child in self.groups.all():
+            decendents += [child] + child.decendents()
+        return decendents
+
     def __str__(self):
         """Return a human readable representation of the model instance."""
         return "{}".format(self.name)

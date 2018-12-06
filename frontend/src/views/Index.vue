@@ -136,7 +136,7 @@ export default {
           }
         })
         .catch((response) => {
-          comp.errors.push(response.data)
+          comp.errors.assign(response.data)
         })
         .then(() => {
           comp.$emit('doLoading', false)
@@ -174,6 +174,7 @@ export default {
     },
     doQuery (query) {
       this.queryParams.query = query
+      this.queryParams.page = 1
       this.getIconsForQuery()
     }
   },

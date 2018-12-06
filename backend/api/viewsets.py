@@ -64,10 +64,23 @@ class IconViewSet(viewsets.ReadOnlyModelViewSet):
         params = get_uuid_params(self.request, 'group', 'iconset', 'node')
         queryset = Icon.objects.all()
         node_filter = Q()
-        if 'group' in params or 'node' in params:
-           node_filter &= Q(icon_set__group__uuid__exact=params['group'].urn)
+        if 'group' in params:
+            # It could be that the user selected a parent group, in order to
+            # retrieve every icon matching a query under the parent group, we
+            # need to either follow a tree, or unwind one recursively.
+            # Unwinding a tree recursively is inefficient because it requires
+            # queries on each node level but it works across DBMSs and it is a
+            # lot easier to implement, for now the query speed is very
+            # acceptable so the unwinding method was chosen: Recursively unwind
+            # every group's groups and make a flat list of UUIDs, the do a
+            # `icon.uuid IN <uuid list>` query.
+            decendents = Group.objects.get(pk=params['group'].urn).decendents()
+            decendents = [d.uuid.urn for d in decendents]
+            node_filter &= Q(
+                icon_set__group__uuid__in=decendents + [params['group'].urn]
+            )
         if 'iconset' in params:
-           node_filter &= Q(icon_set__uuid__exact=params['iconset'].urn)
+            node_filter &= Q(icon_set__uuid__exact=params['iconset'].urn)
 
         all_queries_filter = Q()
         query = self.request.query_params.get('query', None)
