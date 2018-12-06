@@ -5,7 +5,7 @@ import tempfile
 import json
 from pathlib import Path
 from contextlib import contextmanager
-from iconmason.settings import MEDIA_ROOT
+from django.conf import settings
 from iconmason.models.tag import Tag
 from iconmason.models.group import Group
 from iconmason.models.iconset import IconSet
@@ -294,7 +294,7 @@ class IconJarImporter:
         @return TempDirectory object of a temporary directory.
         """
         self.log("Uncompressing path: {}", str(path))
-        tmpdir = tempfile.TemporaryDirectory(dir=MEDIA_ROOT)
+        tmpdir = tempfile.TemporaryDirectory(dir=settings.MEDIA_ROOT)
         shutil.unpack_archive(str(path), tmpdir.name)
         return tmpdir
 

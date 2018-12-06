@@ -7,7 +7,6 @@ from django.db import models
 from django.core.files.storage import FileSystemStorage
 from iconmason.models.iconset import IconSet
 from iconmason.models.tag import Tag
-from iconmason.settings import MEDIA_ROOT
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter

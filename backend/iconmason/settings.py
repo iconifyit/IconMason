@@ -159,5 +159,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+try:
+  from .production_settings import *
+  print("Running in production mode.")
+except:
+  print("Running in development mode.")
 
