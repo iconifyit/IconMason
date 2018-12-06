@@ -136,7 +136,7 @@ export default {
           }
         })
         .catch((response) => {
-          comp.errors.assign(response.data)
+          comp.errors.push(Object.values(response.data))
         })
         .then(() => {
           comp.$emit('doLoading', false)
@@ -156,7 +156,7 @@ export default {
           }
         )
         .catch((response) => {
-          comp.errors.push(response.data)
+          comp.errors.push(Object.values(response.data))
         })
         .then(() => {
           comp.$emit('doLoading', false)
@@ -189,7 +189,7 @@ export default {
         }
       )
       .catch((response) => {
-        comp.errors.push(response.data)
+        comp.errors.push(Object.values(response.data))
       })
       .then(() => {
         comp.$emit('doLoading', false)

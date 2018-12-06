@@ -4,9 +4,8 @@
     <form class="login" @submit.prevent="getAuthToken">
       <header><h2>Log In</h2></header>
       <ErrorAlert
-        v-if="errors.length"
         :key="index"
-        v-for="(error, index) in errors.non_field_errors || [errors.detail]"
+        v-for="(error, index) in all_non_field_errors"
       >
         {{error}}
       </ErrorAlert>
@@ -67,6 +66,20 @@ export default {
   },
   components: {
     ErrorAlert
+  },
+  computed: {
+    all_non_field_errors () {
+      let errors = []
+      if (typeof this.errors === 'object') {
+        if (this.errors.non_field_errors) {
+          errors.push(...Object.values(this.errors.non_field_errors))
+        }
+        if (this.errors.detail) {
+          errors.push(...Object.values(this.errors.errors.detail))
+        }
+      }
+      return errors
+    }
   },
   methods: {
     getAuthToken (username, password) {
