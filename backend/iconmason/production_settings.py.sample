@@ -1,0 +1,4 @@
+SECRET_KEY = '8@y{r#>^S1Pi&RoPpmaP_/^;BP>FYoMj+$E}zF^IyA3!1-xP%6'
+CORS_ORIGIN_WHITELIST=('iconmason.domain.tld',)
+DEBUG = False
+STATIC_ROOT = '/var/www/iconmason/static/'

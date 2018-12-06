@@ -5,7 +5,7 @@
       <header><h2>Log In</h2></header>
       <ErrorAlert
         :key="index"
-        v-for="(error, index) in errors.non_field_errors"
+        v-for="(error, index) in errors.non_field_errors || [errors.detail]"
       >
         {{error}}
       </ErrorAlert>
@@ -83,8 +83,7 @@ export default {
           comp.$emit('login', response.data.token)
         })
         .catch((exc) => {
-          // Only errors if it is not falsy, messes up the template if it is.
-          if (exc) comp.errors = exc.errors
+          comp.errors = exc.errors
         }).then(() => {
           comp.credentials = {
             username: '',
