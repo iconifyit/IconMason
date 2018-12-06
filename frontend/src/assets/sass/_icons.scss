@@ -7,8 +7,19 @@ html[theme="dark"] {
     *:not([fill="none"]):not([class]) {
       fill: #fff;
     }
-    *:not([stroke="none"]):not([class])[stroke] , .a {
+    *:not([stroke="none"]):not([class])[stroke], .a {
       stroke: #fff;
+    }
+    .b {
+      stroke: #fff;
+    }
+  }
+}
+html[theme="light"] {
+  main section.grid figure svg,
+  main .modal figure svg {
+    .b {
+      stroke: #000;
     }
   }
 }
