@@ -110,7 +110,7 @@ You can run the Django development server which is __not__ suitable for producti
 
 ``` bash
 cd backend
-./manage.py runserver 8080
+./manage.py runserver 9000
 ```
 
 ### Frontend

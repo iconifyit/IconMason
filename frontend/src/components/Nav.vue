@@ -9,8 +9,8 @@
       <li class="dropdown">
         <a href="#" @click.prevent>Links</a>
         <ul>
-          <li><a href="//localhost:8080/api/">API</a></li>
-          <li><a href="//localhost:8080/admin/">Admin</a></li>
+          <li><a href="/api/">API</a></li>
+          <li><a href="/admin/">Admin</a></li>
         </ul>
       </li>
       <li><router-link v-if="!auth.authenticated" to="/login">Login</router-link></li>
