@@ -40,13 +40,11 @@ export default {
     cancelQuery () {
       if (this.cancel) {
         this.cancel()
-        console.log('cancel!')
       }
     },
     flushQuery () {
       if (this.flush) {
         this.flush()
-        console.log('flush!')
       }
     }
   }

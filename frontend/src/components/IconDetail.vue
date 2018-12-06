@@ -107,8 +107,8 @@ export default {
       .then(function (response) {
         comp.details = response.data
       })
-      .catch(function (response) {
-        comp.errors.push(response.data)
+      .catch(function (exc) {
+        comp.errors = exc.data
       })
       .then(function () {
         comp.loading = false

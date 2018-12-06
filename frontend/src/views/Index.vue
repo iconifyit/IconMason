@@ -81,7 +81,8 @@ export default {
       queryParams: {
         query: null,
         page: 1,
-        node: null
+        group: null,
+        iconset: null
       }
     }
   },
@@ -100,18 +101,19 @@ export default {
         this.currentGroup = paths[paths.length - 1]
       }
       this.currentSet = null
+      this.queryParams.iconset = null
       this.queryParams.page = 1
-      this.queryParams.node = this.currentGroup ? this.currentGroup.uuid : null
+      this.queryParams.group = this.currentGroup ? this.currentGroup.uuid : null
       this.getSetsForQuery()
       this.getIconsForQuery()
     },
     setSetEventHandler (set) {
       if (this.currentSet === set) {
         this.currentSet = null
-        this.queryParams.node = null
+        this.queryParams.iconset = null
       } else {
         this.currentSet = set
-        this.queryParams.node = set.uuid
+        this.queryParams.iconset = set.uuid
       }
       this.queryParams.page = 1
       this.getIconsForQuery()
@@ -145,7 +147,7 @@ export default {
       const client = this.$root.client
       this.$emit('doLoading', true)
       const params = {
-        group: this.currentGroup ? this.currentGroup.uuid : null
+        group: this.currentGroup ? this.currentGroup.uuid : 'root'
       }
       client.get('/iconsets/', { params })
         .then(
