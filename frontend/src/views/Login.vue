@@ -86,7 +86,7 @@ export default {
       const comp = this
       const client = this.$root.client
       this.$emit('doLoading', true)
-      this.lologinDisabled = true
+      this.loginDisabled = true
       client.post(
         '/auth/', {
           username: this.credentials.username,

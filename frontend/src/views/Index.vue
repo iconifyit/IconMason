@@ -75,7 +75,7 @@ export default {
       currentGroupPath: [],
       currentSet: null,
       currentGroup: null,
-      errors: {},
+      errors: [],
       modalActive: false,
       expandedNav: false,
       queryParams: {
@@ -135,8 +135,9 @@ export default {
             comp.iconData = response.data
           }
         })
-        .catch((response) => {
-          comp.errors.push(Object.values(response.data))
+        .catch((exc) => {
+          console.log(comp.errors)
+          comp.errors.push(Object.values(exc.errors))
         })
         .then(() => {
           comp.$emit('doLoading', false)
@@ -155,8 +156,9 @@ export default {
             comp.sets = response.data.results
           }
         )
-        .catch((response) => {
-          comp.errors.push(Object.values(response.data))
+        .catch((exc) => {
+          console.log(comp.errors)
+          comp.errors.push(Object.values(exc.errors))
         })
         .then(() => {
           comp.$emit('doLoading', false)
@@ -188,8 +190,9 @@ export default {
           comp.groups = response.data.results
         }
       )
-      .catch((response) => {
-        comp.errors.push(Object.values(response.data))
+      .catch((exc) => {
+        console.log(comp.errors)
+        comp.errors.push(Object.values(exc.errors))
       })
       .then(() => {
         comp.$emit('doLoading', false)
