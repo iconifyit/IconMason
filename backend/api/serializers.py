@@ -15,6 +15,11 @@ class TagSerializer(HyperlinkedModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
         model = Tag
         fields = ('name', 'id')
+        extra_kwargs = {
+            'name': {
+                'validators': [],
+            }
+        }
 
 
 class IconSetSerializer(HyperlinkedModelSerializer):
@@ -37,7 +42,8 @@ class GroupSerializer(ModelSerializer):
 
 class IconSerializer(HyperlinkedModelSerializer):
     """Serializer to map the Icon model instance into JSON format."""
-    tags = TagSerializer(required=False, allow_null=True, many=True)
+    tags = TagSerializer(
+        required=False, allow_null=True, many=True, read_only=False, validators=[])
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
@@ -46,6 +52,23 @@ class IconSerializer(HyperlinkedModelSerializer):
             'uuid', 'name', 'file', 'tags', 'url', 'svg_data', 'filetype')
         read_only_fields = ('uuid', 'svg_data')
 
+    def create(self, request):
+        tags = validated_data.pop('tags', [])
+        validated_data['tags'] = []
+        for tag in tags:
+            new_tag, created = Tag.objects.get_or_create(**tag)
+            validated_data['tags'].append(new_tag)
+        icon = Icon.objects.create(**validated_data)
+        return icon
+
+    def update(self, icon, validated_data):
+        # Create or update tag that are in the request
+        tags = []
+        for tag in validated_data.pop('tags'):
+            new_tag, created = Tag.objects.get_or_create(**tag)
+            tags.append(new_tag)
+        icon.tags.add(*tags)
+        return icon
 
 class IconSetReverseSerializer(HyperlinkedModelSerializer):
     """Serializer to map the IconSet model instance into JSON format."""
@@ -85,3 +108,4 @@ class IconDetailSerializer(HyperlinkedModelSerializer):
             'filename'
         )
         read_only_fields = ('uuid', 'svg_source')
+

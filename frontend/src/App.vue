@@ -38,7 +38,11 @@ export default {
       // Add the authorization token when we have it.
       this.$root.client.defaults.headers.common['Authorization'] = `Token: $(token)`
       sessionStorage.authToken = token
-      this.$router.push(this.$route.query.from || '/')
+      if (this.$route.query.from && this.$route.query.from.match(/^\/login\/?/i)) {
+        this.$router.push('/')
+      } else {
+        this.$router.push(this.$route.query.from || '/')
+      }
     },
     doLogout () {
       this.auth.authenticated = false
