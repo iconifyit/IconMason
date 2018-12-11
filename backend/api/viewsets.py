@@ -37,7 +37,7 @@ class ResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
-class IconViewSet(viewsets.ReadOnlyModelViewSet):
+class IconViewSet(viewsets.ModelViewSet):
     """Get an Icon list."""
     queryset = Icon.objects.all()
     serializer_class = IconSerializer
@@ -95,7 +95,8 @@ class IconViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = queryset.filter(node_filter & all_queries_filter).distinct()
         return queryset
 
-class TagViewSet(viewsets.ReadOnlyModelViewSet):
+
+class TagViewSet(viewsets.ModelViewSet):
     """Get a list of tags."""
     queryset = Tag.objects.all().order_by("name")
     serializer_class = TagSerializer
@@ -108,7 +109,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class GroupViewSet(viewsets.ReadOnlyModelViewSet):
+class GroupViewSet(viewsets.ModelViewSet):
     """Get a list of groups."""
     queryset = Group.objects.all().order_by("name")
     serializer_class = GroupSerializer
@@ -127,7 +128,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class IconSetViewSet(viewsets.ReadOnlyModelViewSet):
+class IconSetViewSet(viewsets.ModelViewSet):
     """Get a list of icon sets."""
 
     serializer_class = IconSetSerializer

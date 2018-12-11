@@ -39,7 +39,6 @@ export default {
       this.$root.client.defaults.headers.common['Authorization'] = `Token: $(token)`
       sessionStorage.authToken = token
       if (this.$route.query.from && this.$route.query.from.match(/^\/login\/?/i)) {
-        console.log("bailed")
         this.$router.push('/')
       } else {
         this.$router.push(this.$route.query.from || '/')

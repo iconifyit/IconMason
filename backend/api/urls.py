@@ -24,6 +24,6 @@ import api.schema
 urlpatterns = [
     url('schema/', api.schema.schema),
     url('', include(api.routers.router.urls)),
-    url('auth/', views.obtain_auth_token),
-    url('api-auth/', include(rest_framework.urls))
+    url('api-auth/', include(rest_framework.urls)),
+    url('auth/', views.obtain_auth_token)
 ]

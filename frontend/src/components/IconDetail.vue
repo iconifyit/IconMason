@@ -60,6 +60,14 @@
         </figure>
       </main>
       <footer>
+        <div class="field small">
+          <input
+            type="text"
+            id="tag"
+            placeholder="Tag icon"
+            @keyup.enter="addTag"
+          />
+        </div>
         <Tag v-for="(tag, index) in icon.tags" :tag="tag" :key="index" />
       </footer>
     </div>
@@ -97,7 +105,23 @@ export default {
         this.closeIconDetail()
       }
     },
-    downloadSvg
+    downloadSvg,
+    addTag (event) {
+      let comp = this
+      let client = this.$root.client
+      this.loading = true
+      let data = { tags: [{ name: event.target.value }] }
+      client.patch('/icons/' + this.icon.uuid + '/', data)
+        .then(function (response) {
+          comp.icon = response.data
+        })
+        .catch(function (exc) {
+          comp.errors = exc.data
+        })
+        .then(function () {
+          comp.loading = false
+        })
+    }
   },
   mounted: function () {
     let comp = this
