@@ -24,7 +24,6 @@ class Group(models.Model):
     )
     name = models.CharField(
         max_length=200,
-        unique=True,
         db_index=True
     )
 
